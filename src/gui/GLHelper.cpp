@@ -5,7 +5,7 @@
  *      Author: Danping Zou
  */
 
-#include "GLHelper.h"
+#include "gui/GLHelper.h"
 #include "GL/glut.h"
 #include "math/SL_LinAlg.h"
 #include "geometry/SL_Triangulate.h"

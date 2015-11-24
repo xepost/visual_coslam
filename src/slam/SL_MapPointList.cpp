@@ -5,7 +5,7 @@
  *      Author: Danping Zou
  */
 
-#include "SL_MapPointList.h"
+#include "slam/SL_MapPointList.h"
 
 #include "SL_error.h"
 #include <cassert>

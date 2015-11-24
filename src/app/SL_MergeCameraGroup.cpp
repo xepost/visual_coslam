@@ -5,8 +5,8 @@
  *      Author: tsou
  */
 
-#include "SL_MergeCameraGroup.h"
-//#include "SL_GlobParam.h"
+#include "app/SL_MergeCameraGroup.h"
+//#include "app/SL_GlobParam.h"
 #include "slam/SL_PtrVec.h"
 #include "slam/SL_CoSLAMHelper.h"
 #include "slam/SL_FeatureMatching.h"

@@ -5,9 +5,9 @@
  *      Author: Danping Zou
  */
 
-#include "SL_Define.h"
-#include "SL_NCCBlock.h"
-#include "SL_FeaturePoint.h"
+#include "slam/SL_Define.h"
+#include "slam/SL_NCCBlock.h"
+#include "slam/SL_FeaturePoint.h"
 #include <cmath>
 #include <opencv2/opencv.hpp>
 #include "opencv2/imgproc/imgproc.hpp"

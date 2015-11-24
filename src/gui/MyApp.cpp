@@ -5,9 +5,9 @@
  *      Author: Danping Zou
  */
 
-#include "MyApp.h"
-#include "tracking/CGKLT/v3d_gpuklt.h"
-#include "CoSLAMThread.h"
+#include "gui/MyApp.h"
+#include "gui/CoSLAMThread.h"
+#include "CGKLT/v3d_gpuklt.h"
 #include "tools/SL_Timing.h"
 #include "tools/SL_Tictoc.h"
 
@@ -65,7 +65,7 @@ vector<vector<float> > MyApp::s_reprojErrStatic;
 vector<vector<float> > MyApp::s_reprojErrDynamic;
 vector<vector<int> > MyApp::s_frameNumber;
 
-list<coslam_feature_tracker::features> MyApp::featuresList[SLAM_MAX_NUM];
+list<visual_coslam::features> MyApp::featuresList[SLAM_MAX_NUM];
 list<ar_track_alvar_msgs::AlvarMarkers> MyApp::markerList[SLAM_MAX_NUM];
 
 ros::Publisher MyApp::pub_features[SLAM_MAX_NUM];
@@ -932,10 +932,10 @@ void MyApp::subCB_3_videos(const sensor_msgs::ImageConstPtr &img1,
 //	}
 }
 
-void MyApp::subCB_two_features(const coslam_feature_tracker::featuresConstPtr &features0,
-		const coslam_feature_tracker::featuresConstPtr &features1){
-	coslam_feature_tracker::features fts0 = *features0;
-	coslam_feature_tracker::features fts1 = *features1;
+void MyApp::subCB_two_features(const visual_coslam::featuresConstPtr &features0,
+		const visual_coslam::featuresConstPtr &features1){
+	visual_coslam::features fts0 = *features0;
+	visual_coslam::features fts1 = *features1;
 
 //	cout << "subCB_two_features\n";
 
@@ -953,12 +953,12 @@ void MyApp::subCB_two_features(const coslam_feature_tracker::featuresConstPtr &f
 	ROS_INFO("features0: %f, features1: %f\n", features0->header.stamp.toSec(), features1->header.stamp.toSec());
 }
 
-void MyApp::subCB_3_features(const coslam_feature_tracker::featuresConstPtr &features0,
-		const coslam_feature_tracker::featuresConstPtr &features1,
-		const coslam_feature_tracker::featuresConstPtr &features2){
-	coslam_feature_tracker::features fts0 = *features0;
-	coslam_feature_tracker::features fts1 = *features1;
-	coslam_feature_tracker::features fts2 = *features2;
+void MyApp::subCB_3_features(const visual_coslam::featuresConstPtr &features0,
+		const visual_coslam::featuresConstPtr &features1,
+		const visual_coslam::featuresConstPtr &features2){
+	visual_coslam::features fts0 = *features0;
+	visual_coslam::features fts1 = *features1;
+	visual_coslam::features fts2 = *features2;
 
 	cout << "subCB_3_features\n";
 
@@ -1003,15 +1003,15 @@ void MyApp::videoNodeInit(){
 //	sub_video[0].subscribe(*_it, "/gonk_usb_cam/image_raw", 100);
 //	sub_video[1].subscribe(*_it, "/kitt_usb_cam/image_raw", 100);
 
-	sub_video[0].subscribe(*_it, "/coslam_feature_tracker04/image_raw", 10);
-	sub_video[1].subscribe(*_it, "/coslam_feature_tracker05/image_raw", 10);
+	sub_video[0].subscribe(*_it, "/visual_coslam04/image_raw", 10);
+	sub_video[1].subscribe(*_it, "/visual_coslam05/image_raw", 10);
 
-//	sub[0] = _it->subscribe("/coslam_feature_tracker04/image_raw", 10, MyApp::subCB_video01);
-//	sub[1] = _it->subscribe("/coslam_feature_tracker05/image_raw", 10, MyApp::subCB_video02);
+//	sub[0] = _it->subscribe("/visual_coslam04/image_raw", 10, MyApp::subCB_video01);
+//	sub[1] = _it->subscribe("/visual_coslam05/image_raw", 10, MyApp::subCB_video02);
 
 	_imgReady[0] = false;
 	_imgReady[1] = false;
-//	sub_video[2].subscribe(*_it, "/coslam_feature_tracker3/image_raw", 10);
+//	sub_video[2].subscribe(*_it, "/visual_coslam3/image_raw", 10);
 
 
 //	videoSync = new message_filters::Synchronizer< videoSyncPolicy >(videoSyncPolicy(10), sub_video[0], sub_video[1], sub_video[2]);
@@ -1026,13 +1026,13 @@ void MyApp::featureNodeInit(){
 	pub_triggerClients = _nh.advertise<std_msgs::Byte>("/trigger",1);
 
 //	for (int i = 0; i <_camNum; i++){
-		pub_features[0] = _nh.advertise<coslam_feature_tracker::features>("/coslam_feature_tracker04/init_features",10);
-		pub_features[1] = _nh.advertise<coslam_feature_tracker::features>("/coslam_feature_tracker05/init_features",10);
-//		pub_features[2] = _nh.advertise<coslam_feature_tracker::features>("/coslam_feature_tracker3/init_features",10);
+		pub_features[0] = _nh.advertise<visual_coslam::features>("/visual_coslam04/init_features",10);
+		pub_features[1] = _nh.advertise<visual_coslam::features>("/visual_coslam05/init_features",10);
+//		pub_features[2] = _nh.advertise<visual_coslam::features>("/visual_coslam3/init_features",10);
 
-		sub_features[0].subscribe(_nh, "/coslam_feature_tracker04/features", 10);
-		sub_features[1].subscribe(_nh, "/coslam_feature_tracker05/features", 10);
-//		sub_features[2].subscribe(_nh, "/coslam_feature_tracker3/features", 10);
+		sub_features[0].subscribe(_nh, "/visual_coslam04/features", 10);
+		sub_features[1].subscribe(_nh, "/visual_coslam05/features", 10);
+//		sub_features[2].subscribe(_nh, "/visual_coslam3/features", 10);
 //	}
 
 //	featuresSync = new message_filters::Synchronizer< featuresSyncPolicy >(featuresSyncPolicy(10),
@@ -1049,17 +1049,17 @@ void MyApp::videoNodeInit_3Cam(){
 //	sub_video[0].subscribe(*_it, "/gonk_usb_cam/image_raw", 100);
 //	sub_video[1].subscribe(*_it, "/kitt_usb_cam/image_raw", 100);
 
-	sub_video[0].subscribe(*_it, "/coslam_feature_tracker04/image_raw", 10);
-	sub_video[1].subscribe(*_it, "/coslam_feature_tracker05/image_raw", 10);
-	sub_video[2].subscribe(*_it, "/coslam_feature_tracker06/image_raw", 10);
+	sub_video[0].subscribe(*_it, "/visual_coslam04/image_raw", 10);
+	sub_video[1].subscribe(*_it, "/visual_coslam05/image_raw", 10);
+	sub_video[2].subscribe(*_it, "/visual_coslam06/image_raw", 10);
 
-//	sub[0] = _it->subscribe("/coslam_feature_tracker04/image_raw", 10, MyApp::subCB_video01);
-//	sub[1] = _it->subscribe("/coslam_feature_tracker05/image_raw", 10, MyApp::subCB_video02);
+//	sub[0] = _it->subscribe("/visual_coslam04/image_raw", 10, MyApp::subCB_video01);
+//	sub[1] = _it->subscribe("/visual_coslam05/image_raw", 10, MyApp::subCB_video02);
 
 	_imgReady[0] = false;
 	_imgReady[1] = false;
 	_imgReady[2] = false;
-//	sub_video[2].subscribe(*_it, "/coslam_feature_tracker3/image_raw", 10);
+//	sub_video[2].subscribe(*_it, "/visual_coslam3/image_raw", 10);
 
 
 //	videoSync = new message_filters::Synchronizer< videoSyncPolicy >(videoSyncPolicy(10), sub_video[0], sub_video[1], sub_video[2]);
@@ -1075,13 +1075,13 @@ void MyApp::featureNodeInit_3Cam(){
 	pub_triggerClients = _nh.advertise<std_msgs::Byte>("/trigger",1);
 
 //	for (int i = 0; i <_camNum; i++){
-		pub_features[0] = _nh.advertise<coslam_feature_tracker::features>("/coslam_feature_tracker04/init_features",10);
-		pub_features[1] = _nh.advertise<coslam_feature_tracker::features>("/coslam_feature_tracker05/init_features",10);
-		pub_features[2] = _nh.advertise<coslam_feature_tracker::features>("/coslam_feature_tracker06/init_features",10);
+		pub_features[0] = _nh.advertise<visual_coslam::features>("/visual_coslam04/init_features",10);
+		pub_features[1] = _nh.advertise<visual_coslam::features>("/visual_coslam05/init_features",10);
+		pub_features[2] = _nh.advertise<visual_coslam::features>("/visual_coslam06/init_features",10);
 
-		sub_features[0].subscribe(_nh, "/coslam_feature_tracker04/features", 10);
-		sub_features[1].subscribe(_nh, "/coslam_feature_tracker05/features", 10);
-		sub_features[2].subscribe(_nh, "/coslam_feature_tracker06/features", 10);
+		sub_features[0].subscribe(_nh, "/visual_coslam04/features", 10);
+		sub_features[1].subscribe(_nh, "/visual_coslam05/features", 10);
+		sub_features[2].subscribe(_nh, "/visual_coslam06/features", 10);
 //	}
 
 //	featuresSync = new message_filters::Synchronizer< featuresSyncPolicy >(featuresSyncPolicy(10),

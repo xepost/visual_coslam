@@ -5,7 +5,7 @@
  *      Author: Danping Zou
  */
 
-#include "GLImageWnd.h"
+#include "gui/GLImageWnd.h"
 
 GLImageWnd::~GLImageWnd() {
 

@@ -4,8 +4,10 @@
  *  Created on: 2011-1-16
  *      Author: Danping Zou
  */
-#include "GLImagePane.h"
-#include "GLHelper.h"
+#include "gui/GLImagePane.h"
+#include "gui/GLHelper.h"
+#include "gui/GLScenePane.h"
+#include "gui/MyApp.h"
 
 #include "app/SL_GlobParam.h"
 
@@ -17,8 +19,6 @@
 
 #include "slam/SL_CoSLAMHelper.h"
 
-#include "MyApp.h"
-#include "GLScenePane.h"
 #include <cfloat>
 
 int GLImagePane::s_clicked_camid = -1;

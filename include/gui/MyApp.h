@@ -18,9 +18,9 @@
 #include "MainDialog.h"
 #include "CoSLAMThread.h"
 
-#include "videoReader/VR_AVIReader.h"
-#include "videoReader/VR_USBCamReader.h"
-#include "videoReader/VR_ROSReader.h"
+#include "video_reader/VR_AVIReader.h"
+#include "video_reader/VR_USBCamReader.h"
+#include "video_reader/VR_ROSReader.h"
 
 #include "ros/ros.h"
 #include "sensor_msgs/Image.h"
@@ -32,7 +32,7 @@
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
-#include <coslam_feature_tracker/features.h>
+#include <visual_coslam/features.h>
 
 #include <ar_track_alvar_msgs/AlvarMarkers.h>
 
@@ -70,11 +70,11 @@ public:
 	static ros::Publisher pub_mapInit;
 	static ros::Publisher pub_triggerClients;
 
-	static std::list<coslam_feature_tracker::features> featuresList[SLAM_MAX_NUM];
+	static std::list<visual_coslam::features> featuresList[SLAM_MAX_NUM];
 	static std::list<ar_track_alvar_msgs::AlvarMarkers> markerList[SLAM_MAX_NUM];
 
 	image_transport::SubscriberFilter sub_video[SLAM_MAX_NUM];
-	message_filters::Subscriber<coslam_feature_tracker::features> sub_features[SLAM_MAX_NUM];
+	message_filters::Subscriber<visual_coslam::features> sub_features[SLAM_MAX_NUM];
 	message_filters::Subscriber<ar_track_alvar_msgs::AlvarMarkers>
 	sub_ar_marker_pose[SLAM_MAX_NUM];
 //	ros::Subscriber sub_features[SLAM_MAX_NUM];
@@ -88,9 +88,9 @@ public:
 	message_filters::Synchronizer< videoSyncPolicy > *videoSync;
 
 //	typedef message_filters::sync_policies::ApproximateTime<
-//			coslam_feature_tracker::features, coslam_feature_tracker::features,coslam_feature_tracker::features> featuresSyncPolicy;
+//			visual_coslam::features, visual_coslam::features,visual_coslam::features> featuresSyncPolicy;
 	typedef message_filters::sync_policies::ApproximateTime<
-				coslam_feature_tracker::features,coslam_feature_tracker::features> featuresSyncPolicy;
+				visual_coslam::features,visual_coslam::features> featuresSyncPolicy;
 	message_filters::Synchronizer< featuresSyncPolicy > *featuresSync;
 
 	typedef message_filters::sync_policies::ApproximateTime<
@@ -98,10 +98,10 @@ public:
 	message_filters::Synchronizer< videoSyncPolicy_3Cam > *videoSync_3Cam;
 
 //	typedef message_filters::sync_policies::ApproximateTime<
-//			coslam_feature_tracker::features, coslam_feature_tracker::features,coslam_feature_tracker::features> featuresSyncPolicy;
+//			visual_coslam::features, visual_coslam::features,visual_coslam::features> featuresSyncPolicy;
 	typedef message_filters::sync_policies::ApproximateTime<
-				coslam_feature_tracker::features,coslam_feature_tracker::features,
-				coslam_feature_tracker::features> featuresSyncPolicy_3Cam;
+				visual_coslam::features,visual_coslam::features,
+				visual_coslam::features> featuresSyncPolicy_3Cam;
 	message_filters::Synchronizer< featuresSyncPolicy_3Cam > *featuresSync_3Cam;
 
 	typedef message_filters::sync_policies::ApproximateTime<
@@ -134,12 +134,12 @@ public:
 	void loop();
 	static void end();
 	void subCB_two_videos(const sensor_msgs::ImageConstPtr &img1,  const sensor_msgs::ImageConstPtr &img2);
-	void subCB_two_features(const coslam_feature_tracker::featuresConstPtr &features0,  const coslam_feature_tracker::featuresConstPtr &features1);
+	void subCB_two_features(const visual_coslam::featuresConstPtr &features0,  const visual_coslam::featuresConstPtr &features1);
 	void subCB_3_videos(const sensor_msgs::ImageConstPtr &img1,  const sensor_msgs::ImageConstPtr &img2,
 			const sensor_msgs::ImageConstPtr &img3);
-	void subCB_3_features(const coslam_feature_tracker::featuresConstPtr &features0,
-			const coslam_feature_tracker::featuresConstPtr &features1,
-			const coslam_feature_tracker::featuresConstPtr &features2);
+	void subCB_3_features(const visual_coslam::featuresConstPtr &features0,
+			const visual_coslam::featuresConstPtr &features1,
+			const visual_coslam::featuresConstPtr &features2);
 	void subCB_2_marker_pose(const ar_track_alvar_msgs::AlvarMarkersConstPtr &pose0,
 			const ar_track_alvar_msgs::AlvarMarkersConstPtr &pose1);
 

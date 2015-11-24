@@ -5,7 +5,10 @@
  *      Author: Danping Zou
  */
 
-#include "SL_InitMap.h"
+#include "app/SL_InitMap.h"
+#include "app/SL_CoSLAMBA.h"
+#include "app/SL_GlobParam.h"
+
 #include "tools/SL_Debug.h"
 #include "matching/SL_StereoMatcher.h"
 #include "matching/SL_GuidedSSDMatcher.h"
@@ -21,8 +24,6 @@
 #include "slam/SL_Define.h"
 #include "slam/SL_InitMapHelper.h"
 #include "slam/SL_FeatureMatching.h"
-#include "SL_CoSLAMBA.h"
-#include "SL_GlobParam.h"
 
 #include "calibration/SL_CalibTwoCam.h"
 
@@ -112,7 +113,7 @@ void InitMap::detectSurfFeats(int iCam) {
 	}
 
 	//remove the distortion
-	undistorNormPoints(invK[iCam], invkd[iCam], num, pts, ptsNorm);
+	undistortNormPoints(invK[iCam], invkd[iCam], num, pts, ptsNorm);
 	imagePoints(K[iCam], num, ptsNorm, pts);
 
 //	imshow("wnd", *(m_pImgRGB[iCam]));
@@ -153,7 +154,7 @@ void InitMap::detectCorners(int iCam) {
 	}
 
 	// remove the distortion
-	undistorNormPoints(invK[iCam], invkd[iCam], num, pts, ptsNorm);
+	undistortNormPoints(invK[iCam], invkd[iCam], num, pts, ptsNorm);
 	imagePoints(K[iCam], num, ptsNorm, pts);
 
 	m_cornerFlag[iCam].resize(num, 1);

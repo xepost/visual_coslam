@@ -6,15 +6,15 @@
  */
 
 #include "SL_error.h"
-#include "SL_IntraCamPoseEstimator.h"
+#include "slam/SL_IntraCamPoseEstimator.h"
+#include "slam/SL_FeaturePoint.h"
+#include "slam/SL_MapPoint.h"
 #include "matching/SL_StereoMatcherHelper.h"
 #include "math/SL_LinAlg.h"
 
 #include "geometry/SL_Geometry.h"
 #include "geometry/SL_Quaternion.h"
 #include "geometry/SL_Triangulate.h"
-#include "SL_FeaturePoint.h"
-#include "SL_MapPoint.h"
 #include <cassert>
 
 IntraCamPoseEstimator::IntraCamPoseEstimator() {

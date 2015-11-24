@@ -5,7 +5,7 @@
  *      Author: Danping Zou
  */
 
-#include "SL_KeyPoseList.h"
+#include "slam/SL_KeyPoseList.h"
 #include "SL_error.h"
 
 void KeyPose::getStaticMapPoints(vector<MapPoint*>& mappts) const{

@@ -5,9 +5,9 @@
  *      Author: tsou
  */
 
-#include "SL_Define.h"
 #include "SL_error.h"
-#include "SL_GlobalPoseEstimation.h"
+#include "slam/SL_Define.h"
+#include "slam/SL_GlobalPoseEstimation.h"
 
 #include "math/SL_LinAlgWarper.h"
 #include "math/SL_SparseMat.h"

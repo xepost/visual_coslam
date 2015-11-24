@@ -5,7 +5,7 @@
  *      Author: zou
  */
 
-#include "SL_GlobParam.h"
+#include "app/SL_GlobParam.h"
 #include "SL_error.h"
 #include <fstream>
 #include <iostream>

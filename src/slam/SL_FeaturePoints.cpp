@@ -5,8 +5,8 @@
  *      Author: Danping Zou
  */
 
-#include "SL_FeaturePoints.h"
-#include "SL_MapPoint.h"
+#include "slam/SL_FeaturePoints.h"
+#include "slam/SL_MapPoint.h"
 #include "SL_error.h"
 
 FeaturePoints::FeaturePoints() :

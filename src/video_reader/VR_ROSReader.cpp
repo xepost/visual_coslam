@@ -5,7 +5,7 @@
  *      Author: rui
  */
 
-#include "VR_ROSReader.h"
+#include "video_reader/VR_ROSReader.h"
 //#include "SL_error.h"
 
 ROSReader::~ROSReader(){

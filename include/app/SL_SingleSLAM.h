@@ -11,7 +11,7 @@
 #include "tracking/CVKLTTracker.h"
 #include "tracking/CoSL_FeatureTracker.h"
 
-#include "videoReader/VR_VideoReader.h"
+#include "video_reader/VR_VideoReader.h"
 #include "math/SL_Matrix.h"
 
 #include "slam/SL_Camera.h"

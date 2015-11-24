@@ -4,7 +4,7 @@
  *  Created on: 2011-6-10
  *      Author: tsou
  */
-#include "GLTrackballPane.h"
+#include "gui/GLTrackballPane.h"
 
 static void invertMatrix(const GLdouble *m, GLdouble *out);
 /*****************************************************************

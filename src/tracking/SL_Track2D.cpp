@@ -6,7 +6,7 @@
  *		E-mail: dannis.zou@gmail.com
  */
 
-#include "SL_Track2D.h"
+#include "tracking/SL_Track2D.h"
 #include "SL_error.h"
 
 Track2D::Track2D() :

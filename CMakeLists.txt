@@ -1,170 +1,218 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+cmake_minimum_required(VERSION 2.8.3)
+project(visual_coslam)
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(ROS_BUILD_TYPE RelWithDebInfo)
-
-rosbuild_init()
-
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-
-
-#OPENCV and wxWidgets support
-find_package( OpenCV REQUIRED )
-SET(wxWidgets_USE_LIBS base core gl net)
-find_package( wxWidgets )
-include( "${wxWidgets_USE_FILE}" )
-include_directories(
-/home/rui/rosbuild_ws/myROS/libvisualslam/src
-/home/rui/rosbuild_ws/myROS/coslam_gs/src
-/home/rui/rosbuild_ws/myROS/hiredis-master
+## Find catkin macros and libraries
+## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
+## is used, also find other catkin packages
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  std_msgs
+  geometry_msgs
+  image_transport
+  cv_bridge
+  ar_track_alvar
+  message_generation
 )
 
-set(COSLAM_APP
-src/app/APP_OfflineMain_Reloc.cpp
-src/app/APP_OfflineMain.cpp
-src/app/APP_USBCamMain.cpp
-src/app/APP_ROSMain.cpp
-src/app/APP_ROSMain_features.cpp
-src/app/SL_CoSLAM.cpp
-src/app/SL_CoSLAM.h
-src/app/SL_CoSLAMBA.cpp
-src/app/SL_CoSLAMBA.h
-src/app/SL_CoSLAMRobustBA.cpp
-src/app/SL_CoSLAMRobustBA.h
-src/app/SL_GlobParam.cpp
-src/app/SL_GlobParam.h
-src/app/SL_InitMap.cpp
-src/app/SL_InitMap.h
-src/app/SL_InterCamPoseEstimator.cpp
-src/app/SL_InterCamPoseEstimator.h
-src/app/SL_MergeCameraGroup.cpp
-src/app/SL_MergeCameraGroup.h
-src/app/SL_NewMapPointsInterCam.cpp
-src/app/SL_NewMapPointsInterCam.h
-src/app/SL_Relocalization.cpp
-src/app/SL_Relocalization.h
-src/app/SL_SingleSLAM.cpp
-src/app/SL_SingleSLAM.h
+find_package(GLEW REQUIRED)
+find_package(GLUT REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(BLAS REQUIRED)
+find_package(LAPACK REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(Hiredis REQUIRED)
+#find_package(VisualSLAM REQUIRED)
+#find_package(CG REQUIRED)
+find_package(wxWidgets COMPONENTS core base gl REQUIRED)
 
-src/redis/cbredisclient.h
-src/redis/cbredisclient.cpp
-src/redis/PosVelKF.h
-src/redis/PosVelKF.cpp
+## System dependencies are found with CMake's conventions
+# find_package(Boost REQUIRED COMPONENTS system)
+
+
+## Uncomment this if the package has a setup.py. This macro ensures
+## modules and global scripts declared therein get installed
+## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
+# catkin_python_setup()
+
+################################################
+## Declare ROS messages, services and actions ##
+################################################
+
+## To declare and build messages, services or actions from within this
+## package, follow these steps:
+## * Let MSG_DEP_SET be the set of packages whose message types you use in
+##   your messages/services/actions (e.g. std_msgs, actionlib_msgs, ...).
+## * In the file package.xml:
+##   * add a build_depend tag for "message_generation"
+##   * add a build_depend and a run_depend tag for each package in MSG_DEP_SET
+##   * If MSG_DEP_SET isn't empty the following dependency has been pulled in
+##     but can be declared for certainty nonetheless:
+##     * add a run_depend tag for "message_runtime"
+## * In this file (CMakeLists.txt):
+##   * add "message_generation" and every package in MSG_DEP_SET to
+##     find_package(catkin REQUIRED COMPONENTS ...)
+##   * add "message_runtime" and every package in MSG_DEP_SET to
+##     catkin_package(CATKIN_DEPENDS ...)
+##   * uncomment the add_*_files sections below as needed
+##     and list every .msg/.srv/.action file to be processed
+##   * uncomment the generate_messages entry below
+##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
+
+## Generate messages in the 'msg' folder
+add_message_files(
+  DIRECTORY msg
+  FILES
+  features.msg
+)
+generate_messages(DEPENDENCIES std_msgs)
+
+################################################
+## Declare ROS dynamic reconfigure parameters ##
+################################################
+
+## To declare and build dynamic reconfigure parameters within this
+## package, follow these steps:
+## * In the file package.xml:
+##   * add a build_depend and a run_depend tag for "dynamic_reconfigure"
+## * In this file (CMakeLists.txt):
+##   * add "dynamic_reconfigure" to
+##     find_package(catkin REQUIRED COMPONENTS ...)
+##   * uncomment the "generate_dynamic_reconfigure_options" section below
+##     and list every .cfg file to be processed
+
+## Generate dynamic reconfigure parameters in the 'cfg' folder
+# generate_dynamic_reconfigure_options(
+#   cfg/DynReconf1.cfg
+#   cfg/DynReconf2.cfg
+# )
+
+###################################
+## catkin specific configuration ##
+###################################
+## The catkin_package macro generates cmake config files for your package
+## Declare things to be passed to dependent projects
+## INCLUDE_DIRS: uncomment this if you package contains header files
+## LIBRARIES: libraries you create in this project that dependent projects also need
+## CATKIN_DEPENDS: catkin_packages dependent projects also need
+## DEPENDS: system dependencies of this project that dependent projects also need
+catkin_package(
+#  INCLUDE_DIRS include
+#  LIBRARIES visual_coslam
+#  CATKIN_DEPENDS cv_bridge geometry_msgs image_transport roscpp
+#  DEPENDS system_lib
+)
+
+###########
+## Build ##
+###########
+
+set(VisualSLAM_INCLUDE_DIRS /usr/local/include/VisualSLAM)
+
+## Specify additional locations of header files
+## Your package locations should be listed before other locations
+# include_directories(include)
+#TODO change put headers in 'include' directory
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+  ${OPENGL_INCLUDE_DIRS}
+  ${GLUT_INCLUDE_DIRS}
+  ${GLEW_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
+  ${VisualSLAM_INCLUDE_DIRS}
+  ${Hiredis_INCLUDE_DIRS}
+  include
+  #${wxWidgets_INCLUDE_DIRS}
+)
+include("${wxWidgets_USE_FILE}")
+
+add_definitions(-DV3DLIB_GPGPU_ENABLE_CG -DV3DLIB_ENABLE_GPGPU )
+
+## Declare a C++ library
+# add_library(visual_coslam
+#   src/${PROJECT_NAME}/visual_coslam.cpp
+# )
+
+## Add cmake target dependencies of the library
+## as an example, code may need to be generated before libraries
+## either from message generation or dynamic reconfigure
+# add_dependencies(visual_coslam ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## Set source files
+set(COSLAM_APP
+  src/app/APP_OfflineMain_Reloc.cpp
+  src/app/APP_OfflineMain.cpp
+  src/app/APP_USBCamMain.cpp
+  src/app/APP_ROSMain.cpp
+  src/app/APP_ROSMain_features.cpp
+  src/app/SL_CoSLAM.cpp
+  src/app/SL_CoSLAMBA.cpp
+  src/app/SL_CoSLAMRobustBA.cpp
+  src/app/SL_GlobParam.cpp
+  src/app/SL_InitMap.cpp
+  src/app/SL_InterCamPoseEstimator.cpp
+  src/app/SL_MergeCameraGroup.cpp
+  src/app/SL_NewMapPointsInterCam.cpp
+  src/app/SL_Relocalization.cpp
+  src/app/SL_SingleSLAM.cpp
+  src/redis/cbredisclient.cpp
+  src/redis/PosVelKF.cpp
 )
 
 set(COSLAM_GUI
-src/gui/CoSLAMThread.cpp
-src/gui/CoSLAMThread.h
-src/gui/GLHelper.cpp
-src/gui/GLHelper.h
-src/gui/GLImagePane.cpp
-src/gui/GLImagePane.h
-src/gui/GLImageWnd.cpp
-src/gui/GLImageWnd.h
-src/gui/GLScenePane.cpp
-src/gui/GLScenePane.h
-src/gui/GLScenePaneHelper.cpp
-src/gui/GLScenePaneHelper.h
-src/gui/GLSceneWnd.cpp
-src/gui/GLSceneWnd.h
-src/gui/GLTrackballPane.cpp
-src/gui/GLTrackballPane.h
-src/gui/MainDialog.cpp
-src/gui/MainDialog.h
-src/gui/MyApp.cpp
-src/gui/MyApp.h
-src/gui/trackball.cpp
-src/gui/trackball.h
+  src/gui/CoSLAMThread.cpp
+  src/gui/GLHelper.cpp
+  src/gui/GLImagePane.cpp
+  src/gui/GLImageWnd.cpp
+  src/gui/GLScenePane.cpp
+  src/gui/GLScenePaneHelper.cpp
+  src/gui/GLSceneWnd.cpp
+  src/gui/GLTrackballPane.cpp
+  src/gui/MainDialog.cpp
+  src/gui/MyApp.cpp
+  src/gui/trackball.cpp
 )
 
 set(COSLAM_SLAM
-src/slam/SL_Camera.cpp
-src/slam/SL_Camera.h
-src/slam/SL_CameraGroup.h
-src/slam/SL_CoSLAMHelper.cpp
-src/slam/SL_CoSLAMHelper.h
-src/slam/SL_Define.h
-src/slam/SL_FeatureMatching.cpp
-src/slam/SL_FeatureMatching.h
-src/slam/SL_FeaturePoint.cpp
-src/slam/SL_FeaturePoint.h
-src/slam/SL_FeaturePoints.cpp
-src/slam/SL_FeaturePoints.h
-src/slam/SL_GlobalPoseEstimation.cpp
-src/slam/SL_GlobalPoseEstimation.h
-src/slam/SL_InitMapHelper.cpp
-src/slam/SL_InitMapHelper.h
-src/slam/SL_IntraCamPose.cpp
-src/slam/SL_IntraCamPose.h
-src/slam/SL_IntraCamPoseEstimator.cpp
-src/slam/SL_IntraCamPoseEstimator.h
-src/slam/SL_KeyPoseList.cpp
-src/slam/SL_KeyPoseList.h
-src/slam/SL_MapPoint.cpp
-src/slam/SL_MapPoint.h
-src/slam/SL_MapPointList.cpp
-src/slam/SL_MapPointList.h
-src/slam/SL_NCCBlock.cpp
-src/slam/SL_NCCBlock.h
-src/slam/SL_PtrVec.h
-src/slam/SL_SLAMHelper.cpp
-src/slam/SL_SLAMHelper.h
-src/slam/SL_SolvePnP.cpp
-src/slam/SL_SolvePnP.h
+  src/slam/SL_Camera.cpp
+  src/slam/SL_CoSLAMHelper.cpp
+  src/slam/SL_FeatureMatching.cpp
+  src/slam/SL_FeaturePoint.cpp
+  src/slam/SL_FeaturePoints.cpp
+  src/slam/SL_GlobalPoseEstimation.cpp
+  src/slam/SL_InitMapHelper.cpp
+  src/slam/SL_IntraCamPose.cpp
+  src/slam/SL_IntraCamPoseEstimator.cpp
+  src/slam/SL_KeyPoseList.cpp
+  src/slam/SL_MapPoint.cpp
+  src/slam/SL_MapPointList.cpp
+  src/slam/SL_NCCBlock.cpp
+  src/slam/SL_SLAMHelper.cpp
+  src/slam/SL_SolvePnP.cpp
 )
 
 set(COSLAM_TRACKING
-    src/tracking/BriefExtractor.h
-    src/tracking/BriefExtractor.cpp
-	src/tracking/CoSL_BaseKLTTracker.h
-	src/tracking/SL_Track2D.h
-	src/tracking/SL_Track2D.cpp
-	src/tracking/CoSL_FeatureTracker.cpp
-	src/tracking/CoSL_FeatureTracker.h
-	src/tracking/CVKLTTracker.h
-	src/tracking/CVKLTTracker.cpp
-	src/tracking/GPUKLT.h
-	src/tracking/GPUKLT.cpp
-	src/tracking/CGKLT/v3d_exception.h
-	src/tracking/CGKLT/v3d_gpubase.h
-	src/tracking/CGKLT/v3d_gpuflow.h
-	src/tracking/CGKLT/v3d_gpuklt.h
-	src/tracking/CGKLT/v3d_gpupyramid.h
-	src/tracking/CGKLT/v3d_gpuundistort.h
-	src/tracking/CGKLT/v3d_image.h
-	src/tracking/CGKLT/v3d_linear.h
-	src/tracking/CGKLT/v3d_linearbase.h
-	src/tracking/CGKLT/v3d_serialization.h
-	src/tracking/CGKLT/v3d_timer.h
-	src/tracking/CGKLT/v3d_utilities.h
-	src/tracking/CGKLT/v3d_gpubase.cpp
-	src/tracking/CGKLT/v3d_gpuflow.cpp
-	src/tracking/CGKLT/v3d_gpuklt.cpp
-	src/tracking/CGKLT/v3d_gpupyramid.cpp
-	src/tracking/CGKLT/v3d_gpuundistort.cpp
-	src/tracking/CGKLT/v3d_image.cpp
+  src/tracking/SL_Track2D.cpp
+  src/tracking/CoSL_FeatureTracker.cpp
+  src/tracking/CVKLTTracker.cpp
+  src/tracking/GPUKLT.cpp
+  include/CGKLT/v3d_gpubase.cpp
+  include/CGKLT/v3d_gpuflow.cpp
+  include/CGKLT/v3d_gpuklt.cpp
+  include/CGKLT/v3d_gpupyramid.cpp
+  include/CGKLT/v3d_gpuundistort.cpp
+  include/CGKLT/v3d_image.cpp
 )
 
 set(COSLAM_VIDEO_READER
-    src/videoReader/VR_AVIReader.h
-    src/videoReader/VR_AVIReader.cpp
-    src/videoReader/VR_ROSReader.h
-    src/videoReader/VR_ROSReader.cpp
-    src/videoReader/VR_USBCamReader.h
-    src/videoReader/VR_USBCamReader.cpp
+  src/video_reader/VR_AVIReader.cpp
+  src/video_reader/VR_ROSReader.cpp
+  src/video_reader/VR_USBCamReader.cpp
 )
 
+## Set library dependencies
 set(COSLAM_LIB
-	/home/rui/rosbuild_ws/myROS/libvisualslam/Debug/libVisualSLAM.a
+	#/home/rui/rosbuild_ws/myROS/libvisualslam/Debug/libVisualSLAM.a
+  #VisualSLAM
 	lapack
 	blas
 	swscale
@@ -177,31 +225,84 @@ set(COSLAM_LIB
 	CgGL
 	glut 
 	GLU
-	hiredis
+  ${Hiredis_LIBRARIES}
 )
 
-add_definitions(-DV3DLIB_GPGPU_ENABLE_CG -DV3DLIB_ENABLE_GPGPU )
-
-rosbuild_add_executable(coslam_gs    ${COSLAM_APP}
-									  ${COSLAM_GUI}
-									  ${COSLAM_SLAM}
-									  ${COSLAM_TRACKING}
-									  ${COSLAM_VIDEO_READER}									
+## Declare a C++ executable
+add_executable(visual_coslam
+  ${COSLAM_APP}
+  ${COSLAM_GUI}
+  ${COSLAM_SLAM}
+  ${COSLAM_TRACKING}
+  ${COSLAM_VIDEO_READER}									
 )
-target_link_libraries(coslam_gs ${COSLAM_LIB} ${OpenCV_LIBS} ${wxWidgets_LIBRARIES})
 
-#uncomment if you have defined messages
-rosbuild_genmsg()
-#uncomment if you have defined services
-#rosbuild_gensrv()
+### Add cmake target dependencies of the executable
+### same as for the library above
+## add_dependencies(visual_coslam ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#
+### Specify libraries to link a library or executable target against
+target_link_libraries(visual_coslam
+  ${catkin_LIBRARIES}
+  ${VisualSLAM_LIBRARIES}
+  ${COSLAM_LIB}
+  ${wxWidgets_LIBRARIES}
+)
 
-#common commands for building c++ executables and libraries
-#rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-#target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-rosbuild_add_executable(feature_receiver src/feature_receiver.cpp)
-target_link_libraries(feature_receiver ${OpenCV_LIBS})
+#add_executable(feature_receiver src/feature_receiver.cpp)
+#target_link_libraries(feature_receiver
+#  ${catkin_LIBRARIES}
+#)
+#
+#add_executable(video_receiver src/video_receiver.cpp)
+#target_link_libraries(video_receiver
+#  ${catkin_LIBRARIES}
+#)
 
-rosbuild_add_executable(video_receiver src/video_receiver.cpp)
-target_link_libraries(video_receiver ${OpenCV_LIBS})
+#############
+## Install ##
+#############
+
+# all install targets should use catkin DESTINATION variables
+# See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
+
+## Mark executable scripts (Python etc.) for installation
+## in contrast to setup.py, you can choose the destination
+# install(PROGRAMS
+#   scripts/my_python_script
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
+
+## Mark executables and/or libraries for installation
+# install(TARGETS visual_coslam visual_coslam_node
+#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
+
+## Mark cpp header files for installation
+# install(DIRECTORY include/${PROJECT_NAME}/
+#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+#   FILES_MATCHING PATTERN "*.h"
+#   PATTERN ".svn" EXCLUDE
+# )
+
+## Mark other files for installation (e.g. launch and bag files, etc.)
+# install(FILES
+#   # myfile1
+#   # myfile2
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
+
+#############
+## Testing ##
+#############
+
+## Add gtest based cpp test target and link libraries
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_visual_coslam.cpp)
+# if(TARGET ${PROJECT_NAME}-test)
+#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+# endif()
+
+## Add folders to be run by python nosetests
+# catkin_add_nosetests(test)

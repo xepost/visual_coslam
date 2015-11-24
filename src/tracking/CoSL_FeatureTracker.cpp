@@ -5,16 +5,16 @@
  *      Author: Danping Zou
  */
 
-#include "CoSL_FeatureTracker.h"
 #include "SL_error.h"
+#include "tracking/CoSL_FeatureTracker.h"
 #include "slam/SL_Define.h"
+#include "slam/SL_MapPoint.h"
 #include "geometry/SL_Distortion.h"
 #include "tools/SL_TypeConversion.h"
-#include "slam/SL_MapPoint.h"
+#include "tools/SL_Tictoc.h"
 #include <fstream>
 #include <sstream>
 
-#include "tools/SL_Tictoc.h"
 using namespace cv;
 bool comparator ( const pair<float, int>& l, const pair<float, int>& r)
    { return l.first < r.first; }

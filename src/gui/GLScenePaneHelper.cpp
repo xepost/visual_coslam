@@ -5,7 +5,7 @@
  *      Author: tsou
  */
 
-#include "GLScenePaneHelper.h"
+#include "gui/GLScenePaneHelper.h"
 #include <GL/glu.h>
 #include <GL/gl.h>
 #include "GL/glut.h"

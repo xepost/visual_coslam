@@ -4,10 +4,10 @@
  *  Created on: 2011-7-15
  *      Author: zou
  */
-#include "GLScenePane.h"
-#include "GLHelper.h"
-#include "GLScenePaneHelper.h"
-#include "MyApp.h"
+#include "gui/GLScenePane.h"
+#include "gui/GLHelper.h"
+#include "gui/GLScenePaneHelper.h"
+#include "gui/MyApp.h"
 #include "slam/SL_SLAMHelper.h"
 #include <fstream>
 BEGIN_EVENT_TABLE(GLScenePane, GLTrackballPane) EVT_SIZE(GLScenePane::resized)

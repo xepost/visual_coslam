@@ -4,18 +4,18 @@
  *  Created on: 2011-1-3
  *      Author: Danping Zou
  */
-#include "SL_CoSLAM.h"
-#include "SL_InitMap.h"
-#include "SL_NewMapPointsInterCam.h"
-#include "SL_GlobParam.h"
+#include "app/SL_CoSLAM.h"
+#include "app/SL_InitMap.h"
+#include "app/SL_NewMapPointsInterCam.h"
+#include "app/SL_GlobParam.h"
 
 #include "slam/SL_CoSLAMHelper.h"
-#include "SL_MergeCameraGroup.h"
+#include "app/SL_MergeCameraGroup.h"
 #include "gui/MyApp.h"
 
 #include "tools/SL_Tictoc.h"
 #include "tools/GUI_ImageViewer.h"
-#include "videoReader/VR_AVIReader.h"
+#include "video_reader/VR_AVIReader.h"
 
 #include "geometry/SL_Triangulate.h"
 #include "geometry/SL_Geometry.h"
@@ -676,7 +676,7 @@ void CoSLAM::featureReceiving() {
 //	cv::imshow("small img", img);
 }
 
-#include "SL_InterCamPoseEstimator.h"
+#include "app/SL_InterCamPoseEstimator.h"
 bool CoSLAM::interCamPoseUpdate() {
 	const int minStaticNum = 40;
 	vector<Track2DNode*> nodes[SLAM_MAX_NUM];

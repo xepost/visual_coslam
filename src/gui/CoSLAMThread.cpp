@@ -4,13 +4,12 @@
  *  Created on: 2011-1-16
  *      Author: Danping Zou
  */
-#include "CoSLAMThread.h"
+#include "gui/CoSLAMThread.h"
+#include "gui/MyApp.h"
 #include "app/SL_GlobParam.h"
 #include "app/SL_CoSLAM.h"
 #include "tools/SL_Tictoc.h"
 #include "tools/SL_Timing.h"
-
-#include "gui/MyApp.h"
 
 #ifdef WIN32
 #include <io.h>  

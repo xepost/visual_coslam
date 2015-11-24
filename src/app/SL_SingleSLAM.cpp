@@ -4,11 +4,11 @@
  *  Created on: 2011-1-12
  *      Author: Danping Zou
  */
-#include "gui/MyApp.h"
-#include "SL_GlobParam.h"
-#include "SL_SingleSLAM.h"
-#include "SL_GlobParam.h"
+#include "app/SL_GlobParam.h"
+#include "app/SL_SingleSLAM.h"
+#include "app/SL_GlobParam.h"
 
+#include "gui/MyApp.h"
 #include "slam/SL_MapPoint.h"
 #include "slam/SL_IntraCamPose.h"
 #include "slam/SL_SLAMHelper.h"
@@ -400,7 +400,7 @@ int SingleSLAM::initTracker(int f, vector<FeaturePoint*>& existFeatPoints) {
 }
 
 int SingleSLAM::sendInitFeaturePoints(){
-	coslam_feature_tracker::features initFeats;
+	visual_coslam::features initFeats;
 	ros::Time ts(_ts);
 	initFeats.header.stamp = ts;
 

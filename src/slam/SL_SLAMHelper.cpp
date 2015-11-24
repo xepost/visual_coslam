@@ -5,8 +5,8 @@
  *      Author: Danping Zou
  */
 
-#include "SL_SLAMHelper.h"
-#include "SL_IntraCamPose.h"
+#include "slam/SL_SLAMHelper.h"
+#include "slam/SL_IntraCamPose.h"
 #include "math/SL_LinAlg.h"
 #include "geometry/SL_5point.h"
 #include "geometry/SL_Triangulate.h"

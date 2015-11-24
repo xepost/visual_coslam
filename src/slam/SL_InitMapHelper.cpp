@@ -5,7 +5,7 @@
  *      Author: Danping Zou
  */
 
-#include "SL_InitMapHelper.h"
+#include "slam/SL_InitMapHelper.h"
 #include "geometry/SL_Distortion.h"
 #include <queue>
 

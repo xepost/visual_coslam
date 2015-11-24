@@ -2,7 +2,7 @@
 #define OPENCVKLTTRACKER_H_
 #include "CoSL_BaseKLTTracker.h"
 #include "SL_Track2D.h"
-#include "videoReader/VR_AVIReader.h"
+#include "video_reader/VR_AVIReader.h"
 #include "opencv2/ocl/ocl.hpp"
 //#include "tracking/BriefExtractor.h"
 typedef float slfloat;

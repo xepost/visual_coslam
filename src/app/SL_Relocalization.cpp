@@ -1,6 +1,6 @@
-#include "SL_CoSLAM.h"
-#include "SL_Relocalization.h"
-#include "SL_GlobParam.h"
+#include "app/SL_CoSLAM.h"
+#include "app/SL_Relocalization.h"
+#include "app/SL_GlobParam.h"
 #include "slam/SL_MapPoint.h"
 #include "slam/SL_CoSLAMHelper.h"
 

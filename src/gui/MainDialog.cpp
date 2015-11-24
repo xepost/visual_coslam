@@ -5,7 +5,7 @@
  *      Author: tsou
  */
 
-#include "MainDialog.h"
+#include "gui/MainDialog.h"
 
 MainDlg::MainDlg(wxWindow* parent, wxWindowID id, const wxString& title,
 		const wxPoint& pos, const wxSize& size, long style) :

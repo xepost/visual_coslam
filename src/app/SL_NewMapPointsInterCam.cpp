@@ -5,9 +5,9 @@
  *      Author: Danping Zou
  */
 
-#include "SL_NewMapPointsInterCam.h"
-#include "SL_CoSLAM.h"
-#include "SL_GlobParam.h"
+#include "app/SL_NewMapPointsInterCam.h"
+#include "app/SL_CoSLAM.h"
+#include "app/SL_GlobParam.h"
 #include "slam/SL_FeatureMatching.h"
 #include "matching/SL_BlockDescriptorExtractor.h"
 #include "matching/SL_StereoMatcher.h"

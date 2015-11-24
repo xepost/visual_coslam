@@ -5,7 +5,7 @@
  *      Author: elezoud
  */
 
-#include "VR_USBCamReader.h"
+#include "video_reader/VR_USBCamReader.h"
 #include "SL_error.h"
 
 bool USBCamReader::open() {

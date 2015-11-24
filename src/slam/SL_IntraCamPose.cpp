@@ -5,7 +5,7 @@
  *      Author: tsou
  */
 
-#include "SL_IntraCamPose.h"
+#include "slam/SL_IntraCamPose.h"
 
 void getSO3ExpMap(const double w[3], double R[9]) {
 	double theta = sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);

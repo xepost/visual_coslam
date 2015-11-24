@@ -1,4 +1,4 @@
-#include "hiredis.h"
+#include "hiredis/hiredis.h"
 #include <string>
 
 class CBRedisClient {

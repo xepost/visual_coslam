@@ -5,8 +5,8 @@
  *      Author: Danping Zou
  */
 
-#include "GPUKLT.h"
 #include "SL_error.h"
+#include "tracking/GPUKLT.h"
 #include "slam/SL_Define.h"
 #include "geometry/SL_Distortion.h"
 

@@ -5,9 +5,9 @@
  *      Author: zou
  */
 
-#include "SL_InterCamPoseEstimator.h"
+#include "app/SL_InterCamPoseEstimator.h"
+#include "app/SL_GlobParam.h"
 #include "slam/SL_IntraCamPoseEstimator.h"
-#include "SL_GlobParam.h"
 #include "geometry/SL_Quaternion.h"
 #include "geometry/SL_Triangulate.h"
 #include "geometry/SL_Geometry.h"

@@ -6,7 +6,7 @@
  *		E-mail: dannis.zou@gmail.com
  */
 
-#include "SL_Camera.h"
+#include "slam/SL_Camera.h"
 #include "math/SL_Matrix.h"
 
 CamPose::CamPose() :

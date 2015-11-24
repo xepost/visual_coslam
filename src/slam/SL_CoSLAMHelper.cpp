@@ -5,8 +5,8 @@
  *      Author: Danping Zou
  */
 
-#include "SL_CoSLAMHelper.h"
-#include "SL_MapPoint.h"
+#include "slam/SL_CoSLAMHelper.h"
+#include "slam/SL_MapPoint.h"
 
 #include "math/SL_LinAlg.h"
 #include "geometry/SL_Geometry.h"

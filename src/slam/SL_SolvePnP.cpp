@@ -5,7 +5,7 @@
  *      Author: Danping Zou
  */
 
-#include "SL_SolvePnP.h"
+#include "slam/SL_SolvePnP.h"
 #include "geometry/SL_Quaternion.h"
 #include "geometry/SL_Distortion.h"
 #include "geometry/SL_BundleHelper.h"

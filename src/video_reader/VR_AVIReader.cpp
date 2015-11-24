@@ -4,7 +4,7 @@
  *  Created on: 2012-4-10
  *      Author: elezoud
  */
-#include "VR_AVIReader.h"
+#include "video_reader/VR_AVIReader.h"
 #include "SL_error.h"
 
 AVIReader::~AVIReader(){

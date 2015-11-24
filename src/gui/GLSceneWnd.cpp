@@ -5,7 +5,7 @@
  *      Author: Danping Zou
  */
 
-#include "GLSceneWnd.h"
+#include "gui/GLSceneWnd.h"
 
 GLSceneWnd::~GLSceneWnd() {
 

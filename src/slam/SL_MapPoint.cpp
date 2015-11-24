@@ -6,8 +6,8 @@
  *		E-mail: dannis.zou@gmail.com
  */
 
-#include "SL_MapPoint.h"
-#include "SL_FeaturePoint.h"
+#include "slam/SL_MapPoint.h"
+#include "slam/SL_FeaturePoint.h"
 #include "SL_error.h"
 #include <cassert>
 /////////////////////////////////////////////////////////////////////////////////////////
