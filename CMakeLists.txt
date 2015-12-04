@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(visual_coslam)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -19,12 +20,15 @@ find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
-find_package(OpenCV REQUIRED)
+set(CUSTOM_OPENCV_DIR "/home/jacob/opencv-2.4.10.1/install")
+find_package(OpenCV REQUIRED PATHS ${CUSTOM_OPENCV_DIR} NO_DEFAULT_PATH)
 find_package(Hiredis REQUIRED)
-#find_package(VisualSLAM REQUIRED)
-#find_package(CG REQUIRED)
-find_package(wxWidgets COMPONENTS core base gl REQUIRED)
-
+find_package(VisualSLAM REQUIRED)
+#set(VisualSLAM_INCLUDE_DIRS /usr/local/include/VisualSLAM)
+#set(VisualSLAM_LIBRARIES /usr/local/lib/libVisualSLAM.a)
+find_package(CG REQUIRED)
+find_package(wxWidgets 3.0 EXACT COMPONENTS core base gl REQUIRED)
+message(WARNING "JACOB ${wxWidgets_LIBRARIES} ${wxWidgets_USE_FILE} ${wxWidgets_INCLUDE_DIRS}")
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -106,7 +110,6 @@ catkin_package(
 ## Build ##
 ###########
 
-set(VisualSLAM_INCLUDE_DIRS /usr/local/include/VisualSLAM)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
@@ -119,10 +122,13 @@ include_directories(
   ${GLEW_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ${VisualSLAM_INCLUDE_DIRS}
-  ${Hiredis_INCLUDE_DIRS}
+  ${HIREDIS_INCLUDE_DIRS}
+  ${CG_INCLUDE_DIRS}
   include
   #${wxWidgets_INCLUDE_DIRS}
 )
+include_directories("${VisualSLAM_INCLUDE_DIRS}/VisualSLAM/")
+
 include("${wxWidgets_USE_FILE}")
 
 add_definitions(-DV3DLIB_GPGPU_ENABLE_CG -DV3DLIB_ENABLE_GPGPU )
@@ -191,6 +197,7 @@ set(COSLAM_SLAM
 )
 
 set(COSLAM_TRACKING
+  src/tracking/BriefExtractor.cpp
   src/tracking/SL_Track2D.cpp
   src/tracking/CoSL_FeatureTracker.cpp
   src/tracking/CVKLTTracker.cpp
@@ -211,21 +218,17 @@ set(COSLAM_VIDEO_READER
 
 ## Set library dependencies
 set(COSLAM_LIB
-	#/home/rui/rosbuild_ws/myROS/libvisualslam/Debug/libVisualSLAM.a
-  #VisualSLAM
 	lapack
 	blas
 	swscale
 	avformat
 	avutil
 	avcodec
-	Cg	
 	GL
 	GLEW
-	CgGL
+  #CgGL
 	glut 
 	GLU
-  ${Hiredis_LIBRARIES}
 )
 
 ## Declare a C++ executable
@@ -244,7 +247,13 @@ add_executable(visual_coslam
 ### Specify libraries to link a library or executable target against
 target_link_libraries(visual_coslam
   ${catkin_LIBRARIES}
-  ${VisualSLAM_LIBRARIES}
+  ${VisualSLAM_LIBRARY}
+  #${VisualSLAM_LIBRARIES}
+  #${OpenCV_LIBS}
+  ${OpenCV_LIBRARIES}
+  ${CG_LIBRARIES}
+  ${CG_GL_LIBRARIES}
+  ${HIREDIS_LIBRARIES}
   ${COSLAM_LIB}
   ${wxWidgets_LIBRARIES}
 )

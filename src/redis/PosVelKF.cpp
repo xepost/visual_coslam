@@ -2,13 +2,13 @@
 #include <stdio.h>
 
 PosVelKF::PosVelKF(){
-	_state = Mat::zeros(2,1,CV_32F);
-	_statePred = Mat::zeros(2,1,CV_32F);
-	_P = Mat::zeros(2,2,CV_32F);
-	_F = Mat::eye(2,2,CV_32F);
-	_Q = Mat::zeros(2,2,CV_32F);
-	_H = Mat::eye(2,2, CV_32F);
-	_R = Mat::eye(2,2,CV_32F);
+	_state = cv::Mat::zeros(2,1,CV_32F);
+	_statePred = cv::Mat::zeros(2,1,CV_32F);
+	_P = cv::Mat::zeros(2,2,CV_32F);
+	_F = cv::Mat::eye(2,2,CV_32F);
+	_Q = cv::Mat::zeros(2,2,CV_32F);
+	_H = cv::Mat::eye(2,2, CV_32F);
+	_R = cv::Mat::eye(2,2,CV_32F);
 
 	_P.at<float>(0,0) = 10;
 	_P.at<float>(1,1) = 10;
@@ -52,23 +52,23 @@ void PosVelKF::update(cv::Mat& meas, double curr_ts){
 
 	cv::Mat y = meas - _statePred;
 	cv::Mat S = _H * _P_pred * _H.t() + _R;
-	cv::Mat K = _P_pred * _H.t() * S.inv(DECOMP_LU);
+	cv::Mat K = _P_pred * _H.t() * S.inv(cv::DECOMP_LU);
 	_state = _statePred + K * y;
-	_P = (Mat::eye(K.rows, K.rows, CV_32F) - K * _H) * _P_pred;
+	_P = (cv::Mat::eye(K.rows, K.rows, CV_32F) - K * _H) * _P_pred;
 }
 
 void PosVelKF::updatePos(cv::Mat& meas, double curr_ts, float R){
 	if(!predict(meas, curr_ts))
 		return;
 
-	cv::Mat H = Mat::zeros(1,2,CV_32F);
+	cv::Mat H = cv::Mat::zeros(1,2,CV_32F);
 	H.at<float>(0,0) = 1;
 
 	float y = meas.at<float>(0,0) - _statePred.at<float>(0,0);
 	cv::Mat S = H * _P_pred * H.t() + R;
-	cv::Mat K = _P_pred * H.t() * S.inv(DECOMP_LU);
+	cv::Mat K = _P_pred * H.t() * S.inv(cv::DECOMP_LU);
 	_state = _statePred + K * y;
-	_P = (Mat::eye(K.rows, K.rows, CV_32F) - K * H) * _P_pred;
+	_P = (cv::Mat::eye(K.rows, K.rows, CV_32F) - K * H) * _P_pred;
 }
 
 double PosVelKF::getPos(){

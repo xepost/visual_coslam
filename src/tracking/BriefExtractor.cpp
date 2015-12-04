@@ -1,4 +1,6 @@
-#include "BriefExtractor.h"
+#include "tracking/BriefExtractor.h"
+
+using namespace cv;
 
 BriefExtractor::BriefExtractor(){
 
@@ -57,7 +59,7 @@ void BriefExtractor::pixelTests32_single(const Mat& sum, const KeyPoint& kpt, Ma
 {
 		uchar* desc = descriptor.data;
 		const KeyPoint& pt = kpt;
-		#include  "generated_32.i"
+		#include "tracking/generated_32.i"
 }
 
 void BriefExtractor::pixelTests32(const Mat& sum, const std::vector<KeyPoint>& keypoints, Mat& descriptors)
@@ -66,6 +68,6 @@ void BriefExtractor::pixelTests32(const Mat& sum, const std::vector<KeyPoint>& k
     {
         uchar* desc = descriptors.ptr(i);
         const KeyPoint& pt = keypoints[i];
-		#include  "generated_32.i"
+		    #include "tracking/generated_32.i"
     }
 }

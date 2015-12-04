@@ -113,7 +113,7 @@ void InitMap::detectSurfFeats(int iCam) {
 	}
 
 	//remove the distortion
-	undistortNormPoints(invK[iCam], invkd[iCam], num, pts, ptsNorm);
+	undistorNormPoints(invK[iCam], invkd[iCam], num, pts, ptsNorm);
 	imagePoints(K[iCam], num, ptsNorm, pts);
 
 //	imshow("wnd", *(m_pImgRGB[iCam]));
@@ -154,7 +154,7 @@ void InitMap::detectCorners(int iCam) {
 	}
 
 	// remove the distortion
-	undistortNormPoints(invK[iCam], invkd[iCam], num, pts, ptsNorm);
+	undistorNormPoints(invK[iCam], invkd[iCam], num, pts, ptsNorm);
 	imagePoints(K[iCam], num, ptsNorm, pts);
 
 	m_cornerFlag[iCam].resize(num, 1);

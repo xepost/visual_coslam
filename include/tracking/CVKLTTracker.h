@@ -2,21 +2,22 @@
 #define OPENCVKLTTRACKER_H_
 #include "CoSL_BaseKLTTracker.h"
 #include "SL_Track2D.h"
+#include "BriefExtractor.h"
 #include "video_reader/VR_AVIReader.h"
 #include "opencv2/ocl/ocl.hpp"
-//#include "tracking/BriefExtractor.h"
+//#include "opencv2/gpu/gpu.hpp"
+
 typedef float slfloat;
 using namespace std;
-using namespace cv::ocl;
 
 #define KLT_MAX_FEATURE_NUM 1000// 2 cams
 //#define KLT_MAX_FEATURE_NUM 500// 3 cams
-class BriefExtractor;
+//class BriefExtractor;
 
 class CVKLTTracker : public BaseKLTTracker{
 public:
 	int _blkWidth;
-    int _minDist;
+  int _minDist;
 	int _pyLevel;
 	slfloat _stopEPS;
 	slfloat _maxErr;
@@ -52,9 +53,12 @@ public:
 	BriefExtractor* mBriefExtractor;
 	cv::Mat mDesc;
 
-	PyrLKOpticalFlow d_pyrLK;
-	oclMat _oclPrevGray, _oclCurrGray;
-	oclMat d_prevPts, d_nextPts, d_status;
+  cv::ocl::PyrLKOpticalFlow d_pyrLK;
+  cv::ocl::oclMat _oclPrevGray, _oclCurrGray;
+  cv::ocl::oclMat d_prevPts, d_nextPts, d_status;
+  //cv::gpu::PyrLKOpticalFlow d_pyrLK;
+  //cv::gpu::GpuMat _oclPrevGray, _oclCurrGray;
+  //cv::gpu::GpuMat d_prevPts, d_nextPts, d_status;
 
 	class DetectionParam
 	{
@@ -82,8 +86,10 @@ protected:
 	int _track(const ImgG& img, int& nTracked);
 	int _track_gpu(const ImgG& img, int& nTracked);
 
-	void download(const oclMat& d_mat, vector<cv::Point2f>& vec);
-	void download(const oclMat& d_mat, vector<uchar>& vec);
+	void download(const cv::ocl::oclMat& d_mat, vector<cv::Point2f>& vec);
+	void download(const cv::ocl::oclMat& d_mat, vector<uchar>& vec);
+	//void download(const cv::gpu::GpuMat& d_mat, vector<cv::Point2f>& vec);
+	//void download(const cv::gpu::GpuMat& d_mat, vector<uchar>& vec);
 
 public:
 	CVKLTTracker();

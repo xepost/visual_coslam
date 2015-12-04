@@ -19,6 +19,8 @@
 
 #include "geometry/SL_Triangulate.h"
 #include "geometry/SL_Geometry.h"
+#include "geometry/SL_Point.h"
+
 #include "imgproc/SL_ImageIO.h"
 #include "calibration/SL_CalibTwoCam.h"
 #include <cassert>

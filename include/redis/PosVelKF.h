@@ -2,7 +2,6 @@
 #define _POS_VEL_FILTER_H_
 #include "opencv2/opencv.hpp"
 #include <vector>
-using namespace cv;
 
 class PosVelKF{
 public:

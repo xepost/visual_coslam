@@ -148,8 +148,8 @@ public:
 
 	int readScript(string& filePath);
 
-	vector<int> mStartFrame;
-	string mModeStr;
+	std::vector<int> mStartFrame;
+	std::string mModeStr;
 
 
 	// Create redis clients to send command

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="name" default="c270_1"/>
+	<arg name="marker_size" default="9.5" />
+	<arg name="max_new_marker_error" default="0.08" />
+	<arg name="max_track_error" default="0.2" />
+	<arg name="image" default="/$(arg name)/image_raw" />
+	<arg name="camera_info" default="/$(arg name)/camera_info" />
+	<arg name="output_frame" default="$(arg name)" />
+	
+	<node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen" args="$(arg marker_size) $(arg max_new_marker_error) $(arg max_track_error) $(arg image) $(arg camera_info) $(arg output_frame)" >
+   <!--<remap from="/ar_pose_marker" to="~ar_pose_marker"/>-->
+ 	 <param name="image_transport" value="compressed" />
+ </node>
+</launch>

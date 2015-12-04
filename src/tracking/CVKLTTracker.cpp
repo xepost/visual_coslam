@@ -1,5 +1,5 @@
 #include "tracking/CVKLTTracker.h"
-//#include "BriefExtractor.h"
+#include "tracking/BriefExtractor.h"
 #include "opencv2/opencv.hpp"
 #include "opencv2/nonfree/features2d.hpp"
 
@@ -295,7 +295,8 @@ int CVKLTTracker::_track(const ImgG& img, int& nTracked) {
 	return nTracked;
 }
 
-void CVKLTTracker::download(const oclMat& d_mat, vector<uchar>& vec)
+void CVKLTTracker::download(const cv::ocl::oclMat& d_mat, vector<uchar>& vec)
+//void CVKLTTracker::download(const cv::gpu::GpuMat& d_mat, vector<uchar>& vec)
 {
     vec.clear();
     Mat mat(1, d_mat.cols, CV_8UC1);
@@ -307,7 +308,8 @@ void CVKLTTracker::download(const oclMat& d_mat, vector<uchar>& vec)
 	}
 }
 
-void CVKLTTracker::download(const oclMat& d_mat, vector<cv::Point2f>& vec)
+void CVKLTTracker::download(const cv::ocl::oclMat& d_mat, vector<cv::Point2f>& vec)
+//void CVKLTTracker::download(const cv::gpu::GpuMat& d_mat, vector<cv::Point2f>& vec)
 {
 	vec.clear();
     Mat mat(1, d_mat.cols, CV_32FC2);
@@ -343,7 +345,8 @@ int CVKLTTracker::_track_gpu(const ImgG& img, int& nTracked) {
 	}
 	cv::Mat pts_temp(1, points[0].size(), CV_32FC2, data);
 	d_prevPts.upload(pts_temp);
-	d_pyrLK.sparse(oclMat(prevGray), oclMat(gray), d_prevPts, d_nextPts, d_status);
+	d_pyrLK.sparse(cv::ocl::oclMat(prevGray), cv::ocl::oclMat(gray), d_prevPts, d_nextPts, d_status);
+	//d_pyrLK.sparse(cv::gpu::GpuMat(prevGray), cv::gpu::GpuMat(gray), d_prevPts, d_nextPts, d_status);
     download(d_nextPts, points[1]);
     download(d_status, status);
 
@@ -556,7 +559,7 @@ int CVKLTTracker::rematch(){
 		  ii = ii + 1;
 	}
 
-	printf("good match number: %d\n", matches.size());
+	printf("good match number: %lu\n", matches.size());
 
 
 

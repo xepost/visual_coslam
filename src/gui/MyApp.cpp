@@ -26,6 +26,11 @@ using namespace std;
 using namespace sensor_msgs;
 using namespace message_filters;
 
+static const std::string OFFLINE = "offline";
+static const std::string ONLINE_TWO_CAMS = "online2cams";
+static const std::string ONLINE_THREE_CAMS = "online3cams";
+static const std::string USB_CAMS = "usbCams";
+
 GLImageWnd* MyApp::videoWnd[SLAM_MAX_NUM];
 GLSceneWnd* MyApp::modelWnd1;
 GLSceneWnd* MyApp::modelWnd2;
@@ -170,7 +175,8 @@ void MyApp::onUpdateViews(wxCommandEvent& evt) {
 	static bool bFirst = true;
 	char dirPath[1024];
 	//sprintf(dirPath, "/home/tsou/slam_results_video/%s", MyApp::timeStr);
-	sprintf(dirPath,"/media/VIDEO_DATA_/slam_result_video2/%s",MyApp::timeStr);
+	//sprintf(dirPath,"/media/VIDEO_DATA_/slam_result_video2/%s",MyApp::timeStr);
+	sprintf(dirPath,"/tmp/coslam-%s", MyApp::timeStr);
 #ifdef WIN32
 	mkdir(dirPath);
 #else
@@ -514,15 +520,20 @@ bool MyApp::initROS() {
 }
 
 bool MyApp::initROS_features() {
+	std::cout << "Enter initROS" << std::endl;
 	initSyncVars();
+	std::cout << "init sync vars" << std::endl;
 	glutInit(&argc, argv);
+	std::cout << "glut init" << std::endl;
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+	std::cout << "glut display mode" << std::endl;
 	glEnable(GL_MULTISAMPLE);
+	std::cout << "gl enable" << std::endl;
 	app = this;
 	MyApp::runMode = RUN_MODE_ROS_FEATURES;
 
 	getCurTimeString(timeStr);
-
+    std::cout << "get cur time string" << std::endl;
 //#ifdef WIN32
 //	SLAMParam::camFilePath.push_back(
 //				"/home/rui/workspace/calibrations/0578_cal.txt");
@@ -548,50 +559,62 @@ bool MyApp::initROS_features() {
 ////		SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/ros_data/test3/video1.avi");
 ////		SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/ros_data/test3/video1.avi");
 
-	SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/merge_test/video0_merge.avi");
-	SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/merge_test/video1_merge.avi");
+    // (Jacob) What are these for??
+	//SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/merge_test/video0_merge.avi");
+	//SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/merge_test/video1_merge.avi");
 
-		_camNum = SLAMParam::camFilePath.size();
-
+    _camNum = SLAMParam::camFilePath.size();
+    std::cout << "cam num: " << _camNum << std::endl;
 	SLAMParam::SSD_Threshold = 20000; //20000;
 	SLAMParam::minCornerness = 550; //800;
 
 	for (size_t i = 0; i < SLAMParam::camFilePath.size(); ++i) {
 		coSLAM.addCam(SLAMParam::camFilePath[i].c_str());
+		std::cout << "cam " << i << " calibration passed" << std::endl;
 //		coSLAM.addVideo(SLAMParam::videoFilePath[i].c_str(),
 //					SLAMParam::camFilePath[i].c_str());
-		_cap[i].open(SLAMParam::videoFilePath[i]);
+		//_cap[i].open(SLAMParam::videoFilePath[i]);
+		//std::cout << "cam " << i << " video file path?" << std::endl;
 		int camId = i + 1;
 		MyApp::rosReader[i]._camid = camId;
 		coSLAM.slam[i].videoReader = &MyApp::rosReader[i];
+		std::cout << "cam " << i << " ros reader" << std::endl;
 //		coSLAM.slam[i].videoReader->open();
 	}
 
 	// Initialize the ROS node
-	std::string hostIP = "10.42.0.1";
+	//std::string hostIP = "10.42.0.1";
+	std::string hostIP = "localhost";
 	MyApp::redis[0] = new CBRedisClient("odroid05", hostIP, 6379);
 	MyApp::redis[1] = new CBRedisClient("odroid06", hostIP, 6379);
 	MyApp::redis_start = new CBRedisClient("Start", hostIP, 6379);
 	MyApp::redis_vel = new CBRedisClient("vel", hostIP, 6379);
 	MyApp::redis_dynObj = new CBRedisClient("target", hostIP, 6379);
-
+    
+    std::cout << "redis clients init" << std::endl;
+	
 	videoNodeInit();
+	std::cout << "video node init" << std::endl;
 	featureNodeInit();
+	std::cout << "feature node init" << std::endl;
 	arMarkerNodeInit();
+	std::cout << "ar marker node init" << std::endl;
 
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 	pthread_create(&_nodeThread, &attr, threadProc, this);
-
+    std::cout << "thread create" << std::endl;
 	preWaitCreateGUI();
-
+    std::cout << "pre wait create gui" << std::endl;
 	//create main thread
 	coSlamThread = new CoSLAMThread();
 	coSlamThread->Create();
 	coSlamThread->Run();
+	std::cout << "coslam thread run" << std::endl;
 
 	waitCreateGUI();
+	std::cout << "wait create gui" << std::endl;
 
 	if (!bInitSucc) {
 		wxMessageBox("Initialization failed!");
@@ -632,6 +655,7 @@ bool MyApp::initROS_features() {
 		videoWnd[i]->Show();
 	}
 	modelWnd1->SetFocus();
+	std::cout << "end init ros" << std::endl;
 	return true;
 }
 
@@ -673,8 +697,8 @@ bool MyApp::initROS_features_3cam() {
 ////		SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/ros_data/test3/video1.avi");
 ////		SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/ros_data/test3/video1.avi");
 
-	SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/merge_test/video0_merge.avi");
-	SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/merge_test/video1_merge.avi");
+	//SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/merge_test/video0_merge.avi");
+	//SLAMParam::videoFilePath.push_back("/media/rui/Data/Chatterbox_Data/merge_test/video1_merge.avi");
 
 		_camNum = SLAMParam::camFilePath.size();
 
@@ -700,7 +724,9 @@ bool MyApp::initROS_features_3cam() {
 //	MyApp::redis_vel = new CBRedisClient("vel", "192.168.1.137", 6379);
 //	MyApp::redis_dynObj = new CBRedisClient("target", "192.168.1.137", 6379);
 
-	std::string hostIP = "10.42.0.1";
+    // (Jacob) TODO: Replace redis with Pose publishers (or TF broadcaster)
+	//std::string hostIP = "10.42.0.1";
+	std::string hostIP = "localhost";
 	MyApp::redis[0] = new CBRedisClient("odroid04", hostIP, 6379);
 	MyApp::redis[1] = new CBRedisClient("odroid05", hostIP, 6379);
 	MyApp::redis[2] = new CBRedisClient("odroid06", hostIP, 6379);
@@ -1016,8 +1042,8 @@ void MyApp::videoNodeInit(){
 //	sub_video[0].subscribe(*_it, "/gonk_usb_cam/image_raw", 100);
 //	sub_video[1].subscribe(*_it, "/kitt_usb_cam/image_raw", 100);
 
-	sub_video[0].subscribe(*_it, "/cbodroid05/usb_cam/image_raw", 10); //, image_transport::TransportHints("raw", ros::TransportHints().unreliable()));
-	sub_video[1].subscribe(*_it, "/cbodroid06/usb_cam/image_raw", 10); //, image_transport::TransportHints("raw", ros::TransportHints().unreliable()));
+	sub_video[0].subscribe(*_it, "/coslam/camera01/image_raw", 10); //, image_transport::TransportHints("raw", ros::TransportHints().unreliable()));
+	sub_video[1].subscribe(*_it, "/coslam/camera02/image_raw", 10); //, image_transport::TransportHints("raw", ros::TransportHints().unreliable()));
 
 //	sub[0] = _it->subscribe("/visual_coslam04/image_raw", 10, MyApp::subCB_video01);
 //	sub[1] = _it->subscribe("/visual_coslam05/image_raw", 10, MyApp::subCB_video02);
@@ -1039,12 +1065,12 @@ void MyApp::featureNodeInit(){
 	pub_triggerClients = _nh.advertise<std_msgs::Byte>("/trigger",1);
 
 //	for (int i = 0; i <_camNum; i++){
-		pub_features[0] = _nh.advertise<visual_coslam::features>("/visual_coslam04/init_features",10);
-		pub_features[1] = _nh.advertise<visual_coslam::features>("/visual_coslam05/init_features",10);
+		pub_features[0] = _nh.advertise<visual_coslam::features>("/coslam/init_features01",10);
+		pub_features[1] = _nh.advertise<visual_coslam::features>("/coslam/init_features02",10);
 //		pub_features[2] = _nh.advertise<visual_coslam::features>("/visual_coslam3/init_features",10);
 
-		sub_features[0].subscribe(_nh, "/visual_coslam04/features", 10);
-		sub_features[1].subscribe(_nh, "/visual_coslam05/features", 10);
+		sub_features[0].subscribe(_nh, "/coslam/features01", 10);
+		sub_features[1].subscribe(_nh, "/coslam/features02", 10);
 //		sub_features[2].subscribe(_nh, "/visual_coslam3/features", 10);
 //	}
 
@@ -1062,9 +1088,9 @@ void MyApp::videoNodeInit_3Cam(){
 //	sub_video[0].subscribe(*_it, "/gonk_usb_cam/image_raw", 100);
 //	sub_video[1].subscribe(*_it, "/kitt_usb_cam/image_raw", 100);
 
-	sub_video[0].subscribe(*_it, "/visual_coslam04/image_raw", 10);
-	sub_video[1].subscribe(*_it, "/visual_coslam05/image_raw", 10);
-	sub_video[2].subscribe(*_it, "/visual_coslam06/image_raw", 10);
+	sub_video[0].subscribe(*_it, "/coslam/camera01/image_raw", 10);
+	sub_video[1].subscribe(*_it, "/coslam/camera02/image_raw", 10);
+	sub_video[2].subscribe(*_it, "/coslam/camera03/image_raw", 10);
 
 //	sub[0] = _it->subscribe("/visual_coslam04/image_raw", 10, MyApp::subCB_video01);
 //	sub[1] = _it->subscribe("/visual_coslam05/image_raw", 10, MyApp::subCB_video02);
@@ -1088,13 +1114,13 @@ void MyApp::featureNodeInit_3Cam(){
 	pub_triggerClients = _nh.advertise<std_msgs::Byte>("/trigger",1);
 
 //	for (int i = 0; i <_camNum; i++){
-		pub_features[0] = _nh.advertise<visual_coslam::features>("/visual_coslam04/init_features",10);
-		pub_features[1] = _nh.advertise<visual_coslam::features>("/visual_coslam05/init_features",10);
-		pub_features[2] = _nh.advertise<visual_coslam::features>("/visual_coslam06/init_features",10);
+		pub_features[0] = _nh.advertise<visual_coslam::features>("/coslam/init_features01",10);
+		pub_features[1] = _nh.advertise<visual_coslam::features>("/coslam/init_features02",10);
+		pub_features[2] = _nh.advertise<visual_coslam::features>("/coslam/init_features03",10);
 
-		sub_features[0].subscribe(_nh, "/visual_coslam04/features", 10);
-		sub_features[1].subscribe(_nh, "/visual_coslam05/features", 10);
-		sub_features[2].subscribe(_nh, "/visual_coslam06/features", 10);
+		sub_features[0].subscribe(_nh, "/coslam/features01", 10);
+		sub_features[1].subscribe(_nh, "/coslam/features02", 10);
+		sub_features[2].subscribe(_nh, "/coslam/features03", 10);
 //	}
 
 //	featuresSync = new message_filters::Synchronizer< featuresSyncPolicy >(featuresSyncPolicy(10),
@@ -1123,8 +1149,9 @@ void MyApp::subCB_2_marker_pose(const ar_track_alvar_msgs::AlvarMarkersConstPtr 
 }
 
 void MyApp::arMarkerNodeInit(){
-	sub_ar_marker_pose[0].subscribe(_nh, "/cbodroid05/ar_pose_marker", 10);
-	sub_ar_marker_pose[1].subscribe(_nh, "/cbodroid06/ar_pose_marker", 10);
+	// (Jacob) Do we need a case for three cameras (eg. ar_pose_marker03) ?
+	sub_ar_marker_pose[0].subscribe(_nh, "/coslam/ar_pose_marker01", 10);
+	sub_ar_marker_pose[1].subscribe(_nh, "/coslam/ar_pose_marker02", 10);
 	markerPoseSync = new message_filters::Synchronizer< markerPoseSyncPolicy >(markerPoseSyncPolicy(10),
 			sub_ar_marker_pose[0], sub_ar_marker_pose[1]);
 	markerPoseSync->registerCallback(boost::bind(&MyApp::subCB_2_marker_pose, this, _1, _2));
@@ -1385,22 +1412,22 @@ bool MyApp::OnInit() {
 //	wxPNGHandler* png = new wxPNGHandler;
 //	wxImage::AddHandler(png);
 //
-	string scriptPath("/home/rui/rosbuild_ws/myROS/coslam_gs/src/script.txt");
-	readScript(scriptPath);
+	//string scriptPath("/home/rui/rosbuild_ws/myROS/coslam_gs/src/script.txt");
+	//readScript(scriptPath);
 
-	if (mModeStr.compare("offline") == 0){
+	if (mModeStr.compare(OFFLINE) == 0){
 		if (!initOffline ())
 			return false;
 	}
-	else if(mModeStr.compare("online2Cam") == 0){
+	else if(mModeStr.compare(ONLINE_TWO_CAMS) == 0){
 		if (!initROS_features())
 	  		return false;
 	}
-	else if(mModeStr.compare("online3Cam") == 0){
+	else if(mModeStr.compare(ONLINE_THREE_CAMS) == 0){
 	  	if (!initROS_features_3cam())
 	  	  	return false;
 	}
-	else if(mModeStr.compare("usbCam") == 0){
+	else if(mModeStr.compare(USB_CAMS) == 0){
 		if (!initUSBCam())
 			return false;
 	}
@@ -1409,13 +1436,36 @@ bool MyApp::OnInit() {
 }
 
 int main(int argc, char** argv) {
-	argc = 2;
-	argv[1] = new char[100];
-	string a = "_image_transport:=compressed";
-	strcpy(argv[1], a.c_str());
-	ros::init(argc, argv, "coslam_gs");
+	//argc = 2;
+	//argv[1] = new char[100];
+	//string a = "_image_transport:=compressed";
+	//strcpy(argv[1], a.c_str());
+	std::cout << "enter main" << std::endl;
+ 	ros::init(argc, argv, "visual_coslam");
+ 	std::cout << "ros init" << std::endl;
+    ros::NodeHandle nh("~");
 
-	MyApp* pApp = new MyApp();
+    std::cout << "node handle" << std::endl;
+    MyApp* pApp = new MyApp();
+    std::cout << "Myapp created" << std::endl;
+
+    nh.param<std::string>("mode", pApp->mModeStr, ONLINE_TWO_CAMS);
+
+    // (Jacob) TODO: make a single "online" mode and "num_of_cams" parameter
+    // (Jacob) TODO: Use rosparam to read n calibration files
+    std::string calib1, calib2, calib3;
+    nh.param<std::string>("calib_1", calib1, "");
+    nh.param<std::string>("calib_2", calib2, "");
+    
+    SLAMParam::camFilePath.push_back(calib1);
+    SLAMParam::camFilePath.push_back(calib2);
+
+    if (pApp->mModeStr == ONLINE_THREE_CAMS) {
+      nh.param<std::string>("calib_3", calib3, "");
+      SLAMParam::camFilePath.push_back(calib3);
+    }
+    
+	
 
 	wxApp::SetInstance(pApp);
 	wxEntry(argc, argv);

@@ -26,6 +26,7 @@
 #include "geometry/SL_Triangulate.h"
 #include "geometry/SL_RigidTransform.h"
 #include "geometry/SL_Geometry.h"
+#include "geometry/SL_Point.h"
 
 #include "tools/SL_Print.h"
 
@@ -35,6 +36,8 @@
 
 #include <map>
 #include <set>
+
+using namespace std;
 
 MergeCameraGroup::MergeCameraGroup() :
 		m_pCurKeyFrm(0), m_pFirstConstrainFrm(0), m_pFixedKeyFrm(0), m_gid1(-1), m_gid2(
