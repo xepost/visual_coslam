@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <launch>
+  <!-- Camera nodes -->
+
+  <!-- AR tag tracking nodes -->
   <remap from="/c270_1/ar_pose_marker" to="/coslam/ar_pose_marker01"/>
   <remap from="/c270_2/ar_pose_marker" to="/coslam/ar_pose_marker02"/>
   <include file="$(find visual_coslam)/launch/ar_tracker.launch" ns="c270_1" >
@@ -9,6 +12,7 @@
     <param name="name" value="c270_2"/>
   </include>
 
+  <!-- CoSLAM node -->
   <node name="coslam" pkg="visual_coslam" type="visual_coslam" args="_image_transport:=compressed" output="screen" >
     <remap from="~camera01/image_raw/compressed" to="/c270_1/image_raw/compressed"/>
     <remap from="~camera02/image_raw/compressed" to="/c270_2/image_raw/compressed"/>

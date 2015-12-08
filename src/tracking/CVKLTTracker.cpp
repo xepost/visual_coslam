@@ -296,7 +296,6 @@ int CVKLTTracker::_track(const ImgG& img, int& nTracked) {
 }
 
 void CVKLTTracker::download(const cv::ocl::oclMat& d_mat, vector<uchar>& vec)
-//void CVKLTTracker::download(const cv::gpu::GpuMat& d_mat, vector<uchar>& vec)
 {
     vec.clear();
     Mat mat(1, d_mat.cols, CV_8UC1);
@@ -309,7 +308,6 @@ void CVKLTTracker::download(const cv::ocl::oclMat& d_mat, vector<uchar>& vec)
 }
 
 void CVKLTTracker::download(const cv::ocl::oclMat& d_mat, vector<cv::Point2f>& vec)
-//void CVKLTTracker::download(const cv::gpu::GpuMat& d_mat, vector<cv::Point2f>& vec)
 {
 	vec.clear();
     Mat mat(1, d_mat.cols, CV_32FC2);
@@ -346,8 +344,8 @@ int CVKLTTracker::_track_gpu(const ImgG& img, int& nTracked) {
 	cv::Mat pts_temp(1, points[0].size(), CV_32FC2, data);
 	d_prevPts.upload(pts_temp);
 	d_pyrLK.sparse(cv::ocl::oclMat(prevGray), cv::ocl::oclMat(gray), d_prevPts, d_nextPts, d_status);
-	//d_pyrLK.sparse(cv::gpu::GpuMat(prevGray), cv::gpu::GpuMat(gray), d_prevPts, d_nextPts, d_status);
-    download(d_nextPts, points[1]);
+	
+	download(d_nextPts, points[1]);
     download(d_status, status);
 
 	Mat_i _oldFlag;
@@ -605,7 +603,8 @@ inline bool _keyPointCompare(const cv::KeyPoint& pt1, const cv::KeyPoint& pt2) {
 }
 int CVKLTTracker::track(const ImgG& img) {
 	int nTracked = 0;
-	int trackRes = _track_gpu(img, nTracked);
+	//int trackRes = _track_gpu(img, nTracked);
+	int trackRes = _track(img, nTracked);
 	printf("Tracked result: %d\n", trackRes);
 	if (trackRes < 0)
 		return trackRes;
@@ -618,7 +617,8 @@ int CVKLTTracker::track(const ImgG& img) {
 int CVKLTTracker::trackRedetect(const ImgG& img) {
     //track existing feature points first
 	int nTracked;
-	int trackRes = _track_gpu(img, nTracked);
+	//int trackRes = _track_gpu(img, nTracked);
+	int trackRes = _track(img, nTracked);
 	printf("Tracked number: %d\n", nTracked);
 	if (trackRes < 0)
 		return trackRes;

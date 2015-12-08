@@ -5,7 +5,6 @@
 #include "BriefExtractor.h"
 #include "video_reader/VR_AVIReader.h"
 #include "opencv2/ocl/ocl.hpp"
-//#include "opencv2/gpu/gpu.hpp"
 
 typedef float slfloat;
 using namespace std;
@@ -53,12 +52,12 @@ public:
 	BriefExtractor* mBriefExtractor;
 	cv::Mat mDesc;
 
-  cv::ocl::PyrLKOpticalFlow d_pyrLK;
-  cv::ocl::oclMat _oclPrevGray, _oclCurrGray;
-  cv::ocl::oclMat d_prevPts, d_nextPts, d_status;
-  //cv::gpu::PyrLKOpticalFlow d_pyrLK;
-  //cv::gpu::GpuMat _oclPrevGray, _oclCurrGray;
-  //cv::gpu::GpuMat d_prevPts, d_nextPts, d_status;
+    cv::ocl::PyrLKOpticalFlow d_pyrLK;
+    cv::ocl::oclMat _oclPrevGray, _oclCurrGray;
+    cv::ocl::oclMat d_prevPts, d_nextPts, d_status;
+  // cv::PyrLKOpticalFlow d_pyrLK;
+  // cv::Mat _prevGray, _currGray;
+  // cv::Mat d_prevPts, d_nextPts, d_status;
 
 	class DetectionParam
 	{
@@ -88,9 +87,7 @@ protected:
 
 	void download(const cv::ocl::oclMat& d_mat, vector<cv::Point2f>& vec);
 	void download(const cv::ocl::oclMat& d_mat, vector<uchar>& vec);
-	//void download(const cv::gpu::GpuMat& d_mat, vector<cv::Point2f>& vec);
-	//void download(const cv::gpu::GpuMat& d_mat, vector<uchar>& vec);
-
+	
 public:
 	CVKLTTracker();
 	virtual ~CVKLTTracker();
