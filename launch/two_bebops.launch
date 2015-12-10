@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Camera nodes -->
+
+  <!-- AR tag tracking nodes -->
+  <remap from="/blue_ar_tracker/ar_pose_marker" to="/coslam/ar_pose_marker01"/>
+  <remap from="/red_ar_tracker/ar_pose_marker" to="/coslam/ar_pose_marker02"/>
+  <include file="$(find visual_coslam)/launch/ar_tracker.launch" ns="blue_ar_tracker" >
+    <param name="name" value="blue_ar_tracker"/>
+  </include>
+  <include file="$(find visual_coslam)/launch/ar_tracker.launch" ns="red_ar_tracker" >
+    <param name="name" value="red_ar_tracker"/>
+  </include>
+
+  <!-- CoSLAM node -->
+  <node name="coslam" pkg="visual_coslam" type="visual_coslam" args="_image_transport:=compressed" output="screen" >
+    <remap from="~camera01/image_raw/compressed" to="/blue/image_raw/compressed"/>
+    <remap from="~camera02/image_raw/compressed" to="/red/image_raw/compressed"/>
+    <param name="mode" value="online2cams"/> <!-- or "online3cams", "offline", "usbCams" -->
+    <param name="calib_1" value="/home/jacob/camera_calibrations/bebop.txt"/>
+    <param name="calib_2" value="/home/jacob/camera_calibrations/bebop.txt"/>
+    <!--<param name="calib_3" value="/home/jacob/camera_calibrations/logitech_ball.txt"/>-->
+  </node>
+</launch>

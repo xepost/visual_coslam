@@ -5,6 +5,8 @@
  *      Author: rui
  */
 
+#include <tf/transform_datatypes.h>
+
 #include "gui/CoSLAMThread.h"
 #include "app/SL_GlobParam.h"
 #include "app/SL_CoSLAM.h"
@@ -269,14 +271,33 @@ bool ROSMain_features() {
 						theta = atan2(coSLAM.slam[i]._targetPosInCam[0], coSLAM.slam[i]._targetPosInCam[2]);
 //							double H = targetPos[2] * 2;
 //							double Z = coSLAM.slam[i]._targetPosInCam[2];
-						MyApp::redis[i]->setPoseTarget(ts, 1, theta, org[0], org[1], rpy[2], targetPos[0], targetPos[1], 0.9);
+						
+						// Publish target pose
+                        MyApp::transformStampedMsg.transform.translation.x = targetPos[0];
+						MyApp::transformStampedMsg.transform.translation.y = targetPos[1];
+						//MyApp::transformStampedMsg.transform.translation.z = H;
+						MyApp::transformStampedMsg.transform.rotation = tf::createQuaternionMsgFromRollPitchYaw(0, 0, theta);
+						MyApp::transformStampedMsg.header.stamp.sec = ts;
+						MyApp::targetPosePub.publish(MyApp::transformStampedMsg);
+						//MyApp::redis[i]->setPoseTarget(ts, 1, theta, org[0], org[1], rpy[2], targetPos[0], targetPos[1], 0.9);
 //						MyApp::redis_dynObj->setDynObj(ts, targetPos[0], targetPos[1], 0.9);
 //						printf("currDynPos: %lf %lf %lf\n", cam->currDynPos[0], cam->currDynPos[1], cam->currDynPos[2]);
 					}
-					else
-						MyApp::redis[i]->setPoseTarget(ts, 0, theta, org[0], org[1], rpy[2], targetPos[0], targetPos[1], 0.9);
 
-					MyApp::redis_dynObj->setDynObj(ts, 0.5, 2, 0.9);
+					// Publish camera pose
+					MyApp::transformStampedMsg.transform.translation.x = org[0];
+					MyApp::transformStampedMsg.transform.translation.y = org[1];
+					//MyApp::transformStampedMsg.transform.translation.z = org[2];
+					MyApp::transformStampedMsg.transform.rotation = tf::createQuaternionMsgFromRollPitchYaw(rpy[0], rpy[1], rpy[2]);
+					MyApp::transformStampedMsg.header.stamp.sec = ts;
+					MyApp::posePubs[i].publish(MyApp::transformStampedMsg);
+					
+					// else {
+					// 	MyApp::redis[i]->setPoseTarget(ts, 0, theta, org[0], org[1], rpy[2], targetPos[0], targetPos[1], 0.9);
+					// }
+
+                    // (Jacob) Huh?
+					//MyApp::redis_dynObj->setDynObj(ts, 0.5, 2, 0.9);
 
 					printf("targetPos: %lf %lf %lf\n", targetPos[0], targetPos[1], targetPos[2]);
 					printf("org[2]: %lf %lf %lf\n", org[0], org[1], rpy[2]);

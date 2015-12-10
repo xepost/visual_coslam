@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   ar_track_alvar
   message_generation
+  tf
 )
 
 find_package(GLEW REQUIRED)
@@ -22,7 +23,7 @@ find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 set(CUSTOM_OPENCV_DIR "/home/jacob/opencv-2.4.10.1/install")
 find_package(OpenCV REQUIRED PATHS ${CUSTOM_OPENCV_DIR} NO_DEFAULT_PATH)
-find_package(Hiredis REQUIRED)
+#find_package(Hiredis REQUIRED)
 find_package(VisualSLAM REQUIRED)
 #set(VisualSLAM_INCLUDE_DIRS /usr/local/include/VisualSLAM)
 #set(VisualSLAM_LIBRARIES /usr/local/lib/libVisualSLAM.a)
@@ -122,7 +123,7 @@ include_directories(
   ${GLEW_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ${VisualSLAM_INCLUDE_DIRS}
-  ${HIREDIS_INCLUDE_DIRS}
+  #${HIREDIS_INCLUDE_DIRS}
   ${CG_INCLUDE_DIRS}
   include
   #${wxWidgets_INCLUDE_DIRS}
@@ -160,7 +161,7 @@ set(COSLAM_APP
   src/app/SL_NewMapPointsInterCam.cpp
   src/app/SL_Relocalization.cpp
   src/app/SL_SingleSLAM.cpp
-  src/redis/cbredisclient.cpp
+  #src/redis/cbredisclient.cpp
   src/redis/PosVelKF.cpp
 )
 
@@ -253,20 +254,20 @@ target_link_libraries(visual_coslam
   ${OpenCV_LIBRARIES}
   ${CG_LIBRARIES}
   ${CG_GL_LIBRARIES}
-  ${HIREDIS_LIBRARIES}
+  #${HIREDIS_LIBRARIES}
   ${COSLAM_LIB}
   ${wxWidgets_LIBRARIES}
 )
 
-#add_executable(feature_receiver src/feature_receiver.cpp)
-#target_link_libraries(feature_receiver
-#  ${catkin_LIBRARIES}
-#)
-#
-#add_executable(video_receiver src/video_receiver.cpp)
-#target_link_libraries(video_receiver
-#  ${catkin_LIBRARIES}
-#)
+add_executable(feature_receiver src/feature_receiver.cpp)
+target_link_libraries(feature_receiver
+  ${catkin_LIBRARIES}
+)
+
+add_executable(video_receiver src/video_receiver.cpp)
+target_link_libraries(video_receiver
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

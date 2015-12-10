@@ -31,6 +31,8 @@ static const std::string ONLINE_TWO_CAMS = "online2cams";
 static const std::string ONLINE_THREE_CAMS = "online3cams";
 static const std::string USB_CAMS = "usbCams";
 
+ros::NodeHandle* nodeHandle;
+
 GLImageWnd* MyApp::videoWnd[SLAM_MAX_NUM];
 GLSceneWnd* MyApp::modelWnd1;
 GLSceneWnd* MyApp::modelWnd2;
@@ -87,10 +89,13 @@ CoSLAMThread* MyApp::coSlamThread;
 
 pthread_t MyApp::_nodeThread;
 
-CBRedisClient* MyApp::redis[SLAM_MAX_NUM];
-CBRedisClient* MyApp::redis_start;
-CBRedisClient* MyApp::redis_vel;
-CBRedisClient* MyApp::redis_dynObj;
+//CBRedisClient* MyApp::redis[SLAM_MAX_NUM];
+//CBRedisClient* MyApp::redis_start;
+//CBRedisClient* MyApp::redis_vel;
+//CBRedisClient* MyApp::redis_dynObj;
+ros::Publisher MyApp::posePubs[SLAM_MAX_NUM];
+ros::Publisher MyApp::targetPosePub;
+geometry_msgs::TransformStamped MyApp::transformStampedMsg;
 
 PosVelKF MyApp::posVelKF[SLAM_MAX_NUM][3];
 
@@ -584,14 +589,18 @@ bool MyApp::initROS_features() {
 
 	// Initialize the ROS node
 	//std::string hostIP = "10.42.0.1";
-	std::string hostIP = "localhost";
-	MyApp::redis[0] = new CBRedisClient("odroid05", hostIP, 6379);
-	MyApp::redis[1] = new CBRedisClient("odroid06", hostIP, 6379);
-	MyApp::redis_start = new CBRedisClient("Start", hostIP, 6379);
-	MyApp::redis_vel = new CBRedisClient("vel", hostIP, 6379);
-	MyApp::redis_dynObj = new CBRedisClient("target", hostIP, 6379);
+	// std::string hostIP = "localhost";
+	// MyApp::redis[0] = new CBRedisClient("odroid05", hostIP, 6379);
+	// MyApp::redis[1] = new CBRedisClient("odroid06", hostIP, 6379);
+	// MyApp::redis_start = new CBRedisClient("Start", hostIP, 6379);
+	// MyApp::redis_vel = new CBRedisClient("vel", hostIP, 6379);
+	// MyApp::redis_dynObj = new CBRedisClient("target", hostIP, 6379);
     
-    std::cout << "redis clients init" << std::endl;
+    // Initialize ROS publishers and subscriber
+    MyApp::posePubs[0] = nodeHandle->advertise<geometry_msgs::TransformStamped>(std::string("camera01/pose"), 1);
+    MyApp::posePubs[1] = nodeHandle->advertise<geometry_msgs::TransformStamped>(std::string("camera02/pose"), 1);
+    MyApp::targetPosePub = nodeHandle->advertise<geometry_msgs::TransformStamped>(std::string("target/pose"), 1);
+    std::cout << "ros publishers and subscribers init" << std::endl;
 	
 	videoNodeInit();
 	std::cout << "video node init" << std::endl;
@@ -726,13 +735,13 @@ bool MyApp::initROS_features_3cam() {
 
     // (Jacob) TODO: Replace redis with Pose publishers (or TF broadcaster)
 	//std::string hostIP = "10.42.0.1";
-	std::string hostIP = "localhost";
-	MyApp::redis[0] = new CBRedisClient("odroid04", hostIP, 6379);
-	MyApp::redis[1] = new CBRedisClient("odroid05", hostIP, 6379);
-	MyApp::redis[2] = new CBRedisClient("odroid06", hostIP, 6379);
-	MyApp::redis_start = new CBRedisClient("Start", hostIP, 6379);
-	MyApp::redis_vel = new CBRedisClient("vel", hostIP, 6379);
-	MyApp::redis_dynObj = new CBRedisClient("target", hostIP, 6379);
+	// std::string hostIP = "localhost";
+	// MyApp::redis[0] = new CBRedisClient("odroid04", hostIP, 6379);
+	// MyApp::redis[1] = new CBRedisClient("odroid05", hostIP, 6379);
+	// MyApp::redis[2] = new CBRedisClient("odroid06", hostIP, 6379);
+	// MyApp::redis_start = new CBRedisClient("Start", hostIP, 6379);
+	// MyApp::redis_vel = new CBRedisClient("vel", hostIP, 6379);
+	// MyApp::redis_dynObj = new CBRedisClient("target", hostIP, 6379);
 
 	videoNodeInit_3Cam();
 	featureNodeInit_3Cam();
@@ -1393,10 +1402,10 @@ void MyApp::loop(){
 		loop_rate.sleep();
 	}
 
-	for (int i = 0; i < coSLAM.numCams; i++){
-		delete MyApp::redis[i];
-	}
-	delete MyApp::redis_start;
+	// for (int i = 0; i < coSLAM.numCams; i++){
+	// 	delete MyApp::redis[i];
+	// }
+	// delete MyApp::redis_start;
 }
 
 void MyApp::end()
@@ -1444,6 +1453,7 @@ int main(int argc, char** argv) {
  	ros::init(argc, argv, "visual_coslam");
  	std::cout << "ros init" << std::endl;
     ros::NodeHandle nh("~");
+    nodeHandle = &nh;
 
     std::cout << "node handle" << std::endl;
     MyApp* pApp = new MyApp();

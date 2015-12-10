@@ -26,6 +26,7 @@
 #include "sensor_msgs/Image.h"
 #include <sensor_msgs/image_encodings.h>
 //#include "std_msgs/Bool.h"
+ #include <geometry_msgs/TransformStamped.h>
 
 #include <image_transport/image_transport.h>
 #include <image_transport/subscriber_filter.h>
@@ -36,7 +37,7 @@
 
 #include <ar_track_alvar_msgs/AlvarMarkers.h>
 
-#include "redis/cbredisclient.h"
+//#include "redis/cbredisclient.h"
 
 #define RUN_MODE_OFFLINE 0
 #define RUN_MODE_ONLINE_ARDRONE 1
@@ -153,10 +154,15 @@ public:
 
 
 	// Create redis clients to send command
-	static CBRedisClient* redis[SLAM_MAX_NUM];
-	static CBRedisClient* redis_start;
-	static CBRedisClient* redis_vel;
-	static CBRedisClient* redis_dynObj;
+	// static CBRedisClient* redis[SLAM_MAX_NUM];
+	// static CBRedisClient* redis_start;
+	// static CBRedisClient* redis_vel;
+	// static CBRedisClient* redis_dynObj;
+	static ros::Publisher posePubs[SLAM_MAX_NUM];
+	//ros::Publisher startPub;
+	//ros::Subscriber velSub;
+	static ros::Publisher targetPosePub;
+	static geometry_msgs::TransformStamped transformStampedMsg;
 
 	static PosVelKF posVelKF[SLAM_MAX_NUM][3];
 	static bool usingKF;

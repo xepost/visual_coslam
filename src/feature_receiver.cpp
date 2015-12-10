@@ -1,5 +1,5 @@
 #include "ros/ros.h"
-#include "coslam_gs/features.h"
+#include "visual_coslam/features.h"
 #include "opencv2/opencv.hpp"
 #include <vector>
 using namespace cv;
@@ -8,7 +8,7 @@ std::vector<cv::Point2f> points;
 VideoCapture cap;
 
 
-void subCB(const coslam_gs::featuresConstPtr& msg)
+void subCB(const visual_coslam::featuresConstPtr& msg)
 {
 //for (int i=0; i<msg->images.size; ++i)
 //{
