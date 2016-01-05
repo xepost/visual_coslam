@@ -16,6 +16,12 @@
   <node name="coslam" pkg="visual_coslam" type="visual_coslam" args="_image_transport:=compressed" output="screen" >
     <remap from="~camera01/image_raw/compressed" to="/blue/image_raw/compressed"/>
     <remap from="~camera02/image_raw/compressed" to="/red/image_raw/compressed"/>
+    <remap from="~camera01/pose" to="/blue/pose"/>
+    <remap from="~camera02/pose" to="/red/pose"/>
+    <remap from="~features01" to="/blue/features"/>
+    <remap from="~features02" to="/red/features"/>
+    <remap from="~init_features01" to="/blue/init_features"/>
+    <remap from="~init_features02" to="/red/init_features"/>
     <param name="mode" value="online2cams"/> <!-- or "online3cams", "offline", "usbCams" -->
     <param name="calib_1" value="/home/jacob/camera_calibrations/bebop.txt"/>
     <param name="calib_2" value="/home/jacob/camera_calibrations/bebop.txt"/>
