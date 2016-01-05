@@ -1144,8 +1144,8 @@ void MyApp::featureNodeInit_3Cam(){
 void MyApp::subCB_2_marker_pose(const ar_track_alvar_msgs::AlvarMarkersConstPtr &markers0,
 			const ar_track_alvar_msgs::AlvarMarkersConstPtr &markers1){
 
-//	ROS_INFO("Received markers sizes: %d %d\n", markers0->markers.size(),
-//					markers1->markers.size());
+	//ROS_INFO("Received markers sizes: %d %d\n", markers0->markers.size(),
+	//			   markers1->markers.size());
 
 	if (markers0->markers.size() == _numMarkers
 			&& markers1->markers.size() == _numMarkers)

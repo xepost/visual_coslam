@@ -8,7 +8,7 @@
 	<arg name="camera_info" default="/$(arg name)/camera_info" />
 	<arg name="output_frame" default="$(arg name)" />
 	
-	<node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen" args="$(arg marker_size) $(arg max_new_marker_error) $(arg max_track_error) $(arg image) $(arg camera_info) $(arg output_frame)" >
+	<node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" args="$(arg marker_size) $(arg max_new_marker_error) $(arg max_track_error) $(arg image) $(arg camera_info) $(arg output_frame)" >
    <!--<remap from="/ar_pose_marker" to="~ar_pose_marker"/>-->
  	 <param name="image_transport" value="compressed" />
  </node>

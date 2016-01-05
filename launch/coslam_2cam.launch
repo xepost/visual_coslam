@@ -6,10 +6,10 @@
   <remap from="/c270_1/ar_pose_marker" to="/coslam/ar_pose_marker01"/>
   <remap from="/c270_2/ar_pose_marker" to="/coslam/ar_pose_marker02"/>
   <include file="$(find visual_coslam)/launch/ar_tracker.launch" ns="c270_1" >
-    <param name="name" value="c270_1"/>
+    <arg name="name" value="c270_1"/>
   </include>
   <include file="$(find visual_coslam)/launch/ar_tracker.launch" ns="c270_2" >
-    <param name="name" value="c270_2"/>
+    <arg name="name" value="c270_2"/>
   </include>
 
   <!-- CoSLAM node -->

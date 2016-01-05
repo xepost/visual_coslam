@@ -419,6 +419,7 @@ bool CoSLAM::calibGlobal2Cam(){
 		while(MyApp::markerList[ii].back().markers.size() != MyApp::_numMarkers)
 		{
 			cout << "Not enough markers detected in cam: " << ii << endl;
+      usleep(1000000);     
 		}
 	}
 
