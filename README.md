@@ -10,12 +10,7 @@
 * OpenGL and GLUT `sudo apt-get install libglu1-mesa-dev freeglut3-dev`
 * BLAS `sudo apt-get install libblas-dev`
 * LAPACK `sudo apt-get install liblapack-dev`
-* OpenCV 2.4
-* OpenCV non-free library
-  - `sudo add-apt-repository --yes ppa:xqms/opencv-nonfree`
-  - `sudo apt-get update`
-  - `sudo apt-get install libopencv-nonfree-dev`
-* [[Nvidia CG Toolkit]](https://developer.nvidia.com/cg-toolkit-download)
+* OpenCV 2.4 (with nonfree library)
+* [Nvidia CG Toolkit](https://developer.nvidia.com/cg-toolkit-download)
 * wxWidgets `sudo apt-get install libwxgtk3.0-dev`
 * AR Track Alvar `sudo apt-get install ros-indigo-ar-track-alvar`
-* [[VisualSLAM]](https://github.com/danping/LibVisualSLAM)

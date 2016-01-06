@@ -1165,15 +1165,15 @@ void MyApp::arMarkerNodeInit(){
 			sub_ar_marker_pose[0], sub_ar_marker_pose[1]);
 	markerPoseSync->registerCallback(boost::bind(&MyApp::subCB_2_marker_pose, this, _1, _2));
 
-//	MyApp::markerPoseGlobal[1].x = 0.14; MyApp::markerPoseGlobal[1].y = 0; MyApp::markerPoseGlobal[1].z = 1;
-//	MyApp::markerPoseGlobal[2].x = 0.0; MyApp::markerPoseGlobal[2].y = 0; MyApp::markerPoseGlobal[2].z = 1;
-//	MyApp::markerPoseGlobal[7].x = 0.14; MyApp::markerPoseGlobal[7].y = -0.142; MyApp::markerPoseGlobal[7].z = 1;
-//	MyApp::markerPoseGlobal[8].x = 0.0; MyApp::markerPoseGlobal[8].y = -0.142; MyApp::markerPoseGlobal[8].z = 1;
+	MyApp::markerPoseGlobal[1].x = 0.14; MyApp::markerPoseGlobal[1].y = 0; MyApp::markerPoseGlobal[1].z = 0.142;
+	MyApp::markerPoseGlobal[2].x = 0.0; MyApp::markerPoseGlobal[2].y = 0; MyApp::markerPoseGlobal[2].z = 0.142;
+	MyApp::markerPoseGlobal[7].x = 0.14; MyApp::markerPoseGlobal[7].y = 0; MyApp::markerPoseGlobal[7].z = 0;
+	MyApp::markerPoseGlobal[8].x = 0.0; MyApp::markerPoseGlobal[8].y = 0; MyApp::markerPoseGlobal[8].z = 0;
 
-	MyApp::markerPoseGlobal[1].x = 0.57; MyApp::markerPoseGlobal[1].y = 2; MyApp::markerPoseGlobal[1].z = 0.142;
-	MyApp::markerPoseGlobal[2].x = 0.43; MyApp::markerPoseGlobal[2].y = 2; MyApp::markerPoseGlobal[2].z = 0.142;
-	MyApp::markerPoseGlobal[7].x = 0.57; MyApp::markerPoseGlobal[7].y = 2; MyApp::markerPoseGlobal[7].z = 0;
-	MyApp::markerPoseGlobal[8].x = 0.43; MyApp::markerPoseGlobal[8].y = 2; MyApp::markerPoseGlobal[8].z = 0;
+	//MyApp::markerPoseGlobal[1].x = 0.57; MyApp::markerPoseGlobal[1].y = 2; MyApp::markerPoseGlobal[1].z = 0.142;
+	//MyApp::markerPoseGlobal[2].x = 0.43; MyApp::markerPoseGlobal[2].y = 2; MyApp::markerPoseGlobal[2].z = 0.142;
+	//MyApp::markerPoseGlobal[7].x = 0.57; MyApp::markerPoseGlobal[7].y = 2; MyApp::markerPoseGlobal[7].z = 0;
+	//MyApp::markerPoseGlobal[8].x = 0.43; MyApp::markerPoseGlobal[8].y = 2; MyApp::markerPoseGlobal[8].z = 0;
 }
 
 void MyApp::markerPose2ImageLoc(geometry_msgs::PoseStamped& pose,

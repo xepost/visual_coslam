@@ -24,7 +24,7 @@ find_package(LAPACK REQUIRED)
 set(CUSTOM_OPENCV_DIR "/home/jacob/opencv-2.4.10.1/install")
 find_package(OpenCV REQUIRED PATHS ${CUSTOM_OPENCV_DIR} NO_DEFAULT_PATH)
 #find_package(Hiredis REQUIRED)
-find_package(VisualSLAM REQUIRED)
+#find_package(VisualSLAM REQUIRED)
 #set(VisualSLAM_INCLUDE_DIRS /usr/local/include/VisualSLAM)
 #set(VisualSLAM_LIBRARIES /usr/local/lib/libVisualSLAM.a)
 find_package(CG REQUIRED)
@@ -101,15 +101,28 @@ generate_messages(DEPENDENCIES std_msgs)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES visual_coslam
-#  CATKIN_DEPENDS cv_bridge geometry_msgs image_transport roscpp
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES LibVisualSLAM visual_coslam
+  CATKIN_DEPENDS cv_bridge geometry_msgs image_transport roscpp
+  DEPENDS system_lib
 )
 
 ###########
 ## Build ##
 ###########
+
+include(ExternalProject)
+ExternalProject_Add(LibVisualSLAM
+  GIT_REPOSITORY https://github.com/jacobperron/LibVisualSLAM.git
+  GIT_TAG master
+  PREFIX ${CATKIN_DEVEL_PREFIX}
+  CONFIGURE_COMMAND cmake .
+  BUILD_COMMAND make
+  INSTALL_COMMAND echo "No install"
+  BUILD_IN_SOURCE 1
+)
+
+set(LibVisualSLAM_PATH "${CATKIN_DEVEL_PREFIX}/src/LibVisualSLAM/")
 
 
 ## Specify additional locations of header files
@@ -122,13 +135,15 @@ include_directories(
   ${GLUT_INCLUDE_DIRS}
   ${GLEW_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
-  ${VisualSLAM_INCLUDE_DIRS}
+  #${VisualSLAM_INCLUDE_DIRS}
+  ${LibVisualSLAM_PATH}/src
   #${HIREDIS_INCLUDE_DIRS}
   ${CG_INCLUDE_DIRS}
   include
   #${wxWidgets_INCLUDE_DIRS}
 )
-include_directories("${VisualSLAM_INCLUDE_DIRS}/VisualSLAM/")
+#include_directories("${VisualSLAM_INCLUDE_DIRS}/VisualSLAM/")
+link_directories(${LibVisualSLAM_PATH})
 
 include("${wxWidgets_USE_FILE}")
 
@@ -248,8 +263,8 @@ add_executable(visual_coslam
 ### Specify libraries to link a library or executable target against
 target_link_libraries(visual_coslam
   ${catkin_LIBRARIES}
-  ${VisualSLAM_LIBRARY}
-  #${VisualSLAM_LIBRARIES}
+  #${VisualSLAM_LIBRARY}
+  VisualSLAM
   #${OpenCV_LIBS}
   ${OpenCV_LIBRARIES}
   ${CG_LIBRARIES}
@@ -258,6 +273,7 @@ target_link_libraries(visual_coslam
   ${COSLAM_LIB}
   ${wxWidgets_LIBRARIES}
 )
+add_dependencies(visual_coslam LibVisualSLAM)
 
 add_executable(feature_receiver src/feature_receiver.cpp)
 target_link_libraries(feature_receiver
