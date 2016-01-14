@@ -63,6 +63,7 @@ protected:
 	virtual bool OnInit();
 
 public:
+  static bool doCalibration;
 	int _camNum;
 	ros::NodeHandle _nh;
 	image_transport::ImageTransport* _it;

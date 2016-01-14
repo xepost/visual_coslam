@@ -20,5 +20,6 @@
     <param name="calib_1" value="/home/jacob/camera_calibrations/c270_1.txt"/>
     <param name="calib_2" value="/home/jacob/camera_calibrations/c270_2.txt"/>
     <!--<param name="calib_3" value="/home/jacob/camera_calibrations/logitech_ball.txt"/>-->
+    <param name="calibrate" value="true"/>
   </node>
 </launch>

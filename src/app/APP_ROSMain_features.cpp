@@ -104,9 +104,10 @@ bool ROSMain_features() {
 				//initialise the map points
 				if (coSLAM.initMap()){
 
-					// Need this in real test
-					coSLAM.calibGlobal2Cam();
-//					return 0;
+          if (MyApp::doCalibration) {
+            // Need this in real test
+					  coSLAM.calibGlobal2Cam();
+          }
 
 					for (int i = 0; i < coSLAM.numCams; i++)
 						coSLAM.state[i] = SLAM_STATE_NORMAL;

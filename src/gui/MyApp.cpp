@@ -61,6 +61,7 @@ bool MyApp::bStop = false;
 bool MyApp::bExit = false;
 bool MyApp::bStartInit = false;
 bool MyApp::bStartMove = false;
+bool MyApp::doCalibration;
 
 bool MyApp::bSingleStep = false;
 char MyApp::timeStr[256];
@@ -1452,30 +1453,30 @@ int main(int argc, char** argv) {
 	std::cout << "enter main" << std::endl;
  	ros::init(argc, argv, "visual_coslam");
  	std::cout << "ros init" << std::endl;
-    ros::NodeHandle nh("~");
-    nodeHandle = &nh;
+  ros::NodeHandle nh("~");
+  nodeHandle = &nh;
 
-    std::cout << "node handle" << std::endl;
-    MyApp* pApp = new MyApp();
-    std::cout << "Myapp created" << std::endl;
+  std::cout << "node handle" << std::endl;
+  MyApp* pApp = new MyApp();
+  std::cout << "Myapp created" << std::endl;
 
-    nh.param<std::string>("mode", pApp->mModeStr, ONLINE_TWO_CAMS);
+  nh.param<std::string>("mode", pApp->mModeStr, ONLINE_TWO_CAMS);
 
-    // (Jacob) TODO: make a single "online" mode and "num_of_cams" parameter
-    // (Jacob) TODO: Use rosparam to read n calibration files
-    std::string calib1, calib2, calib3;
-    nh.param<std::string>("calib_1", calib1, "");
-    nh.param<std::string>("calib_2", calib2, "");
+  // (Jacob) TODO: make a single "online" mode and "num_of_cams" parameter
+  // (Jacob) TODO: Use rosparam to read n calibration files
+  std::string calib1, calib2, calib3;
+  nh.param<std::string>("calib_1", calib1, "");
+  nh.param<std::string>("calib_2", calib2, "");
     
-    SLAMParam::camFilePath.push_back(calib1);
-    SLAMParam::camFilePath.push_back(calib2);
+  SLAMParam::camFilePath.push_back(calib1);
+  SLAMParam::camFilePath.push_back(calib2);
 
-    if (pApp->mModeStr == ONLINE_THREE_CAMS) {
-      nh.param<std::string>("calib_3", calib3, "");
-      SLAMParam::camFilePath.push_back(calib3);
-    }
+  if (pApp->mModeStr == ONLINE_THREE_CAMS) {
+    nh.param<std::string>("calib_3", calib3, "");
+    SLAMParam::camFilePath.push_back(calib3);
+  }
     
-	
+  nh.param<bool>("calibrate", MyApp::doCalibration, true);  
 
 	wxApp::SetInstance(pApp);
 	wxEntry(argc, argv);
