@@ -12,5 +12,6 @@
 * LAPACK `sudo apt-get install liblapack-dev`
 * OpenCV 2.4 (with nonfree library)
 * [Nvidia CG Toolkit](https://developer.nvidia.com/cg-toolkit-download)
+* sudo apt-get install  nvidia-cg-toolkit  
 * wxWidgets `sudo apt-get install libwxgtk3.0-dev`
 * AR Track Alvar `sudo apt-get install ros-indigo-ar-track-alvar`
