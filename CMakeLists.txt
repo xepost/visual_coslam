@@ -112,8 +112,8 @@ catkin_package(
 
 include(ExternalProject)
 ExternalProject_Add(LibVisualSLAM
-  GIT_REPOSITORY https://github.com/jacobperron/LibVisualSLAM.git
-  GIT_TAG rui
+  GIT_REPOSITORY https://github.com/xepost/LibVisualSLAM.git
+  GIT_TAG lvs_ros
   PREFIX ${CATKIN_DEVEL_PREFIX}
   CONFIGURE_COMMAND cmake .
   BUILD_COMMAND make
