@@ -116,7 +116,7 @@ ExternalProject_Add(LibVisualSLAM
   GIT_TAG lvs_ros
   PREFIX ${CATKIN_DEVEL_PREFIX}
   CONFIGURE_COMMAND cmake .
-  BUILD_COMMAND make
+  BUILD_COMMAND make -j4
   INSTALL_COMMAND echo "No install"
   BUILD_IN_SOURCE 1
 )
